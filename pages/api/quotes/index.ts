@@ -17,15 +17,28 @@ const handler: NextApiHandler = async function (req, res) {
     return
   }
 
-  try {
-    const client = await clientPromise
-    const db = await client.db(dbName)
+  if (req.method === 'POST') {
+    try {
+      const client = await clientPromise
+      const db = await client.db(dbName)
 
-    const quotes = await db.collection('quotes').find({}).toArray()
+      const quote = await db.collection('quotes').insertOne({ title: req.body.title })
 
-    res.json(quotes)
-  } catch (error) {
-    console.error(error)
+      res.json(quote)
+    } catch (error) {
+      console.error(error)
+    }
+  } else {
+    try {
+      const client = await clientPromise
+      const db = await client.db(dbName)
+
+      const quotes = await db.collection('quotes').find({}).toArray()
+
+      res.json(quotes)
+    } catch (error) {
+      console.error(error)
+    }
   }
 }
 
