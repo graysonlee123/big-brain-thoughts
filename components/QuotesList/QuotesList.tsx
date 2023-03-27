@@ -6,7 +6,7 @@ interface Quote {
 }
 
 export default function QuotesList() {
-  const { data, loading, error } = useFetch<Quote[] | null>('/api/quotess')
+  const { data, loading, error } = useFetch<Quote[] | null>('/api/quotes')
 
   if (loading) return <p>Loading...</p>
 
