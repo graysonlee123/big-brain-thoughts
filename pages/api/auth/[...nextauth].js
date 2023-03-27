@@ -5,7 +5,7 @@ import clientPromise from '../../../utils/db'
 
 export const authOptions = {
   adapter: MongoDBAdapter(clientPromise, {
-    databaseName: 'bbt-dev',
+    databaseName: process.env.MONGOD_DB_NAME,
   }),
   providers: [
     DiscordProvider({
