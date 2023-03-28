@@ -2,6 +2,7 @@ import { NextApiHandler } from 'next'
 import clientPromise from 'lib/db'
 import { getServerSession } from 'next-auth/next'
 import authOptions from '@lib/authOptions'
+import { ObjectId } from 'mongodb'
 
 const dbName = process.env.MONGOD_DB_NAME
 
@@ -22,7 +23,18 @@ const handler: NextApiHandler = async function (req, res) {
       const client = await clientPromise
       const db = await client.db(dbName)
 
-      const quote = await db.collection('quotes').insertOne({ title: req.body.title })
+      const payload: Conversation = {
+        submitter: new ObjectId(session.user.id),
+        conversation: [
+          {
+            content: req.body.title,
+            speaker: new ObjectId(session.user.id),
+          },
+        ],
+        date_time: '12345623',
+      }
+
+      const quote = await db.collection('quotes').insertOne(payload)
 
       res.json({
         ok: true,

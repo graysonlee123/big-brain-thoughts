@@ -7,3 +7,14 @@ interface APIResponse<T = unknown> {
   msg?: string
   data?: T
 }
+
+interface Quote {
+  content: string
+  speaker: import('mongodb').ObjectId
+}
+
+interface Conversation {
+  submitter: import('mongodb')
+  conversation: Quote[]
+  date_time: string
+}
