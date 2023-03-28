@@ -1,8 +1,9 @@
-import DiscordProvider from 'next-auth/providers/discord'
+import DiscordProvider, { DiscordProfile } from 'next-auth/providers/discord'
 import { MongoDBAdapter } from '@next-auth/mongodb-adapter'
 import clientPromise from './db'
+import { AuthOptions } from 'next-auth'
 
-const authOptions = {
+const authOptions: AuthOptions = {
   adapter: MongoDBAdapter(clientPromise, {
     databaseName: process.env.MONGOD_DB_NAME,
   }),
@@ -12,6 +13,17 @@ const authOptions = {
       clientSecret: process.env.DISCORD_CLIENT_SECRET ?? '',
     }),
   ],
+  callbacks: {
+    async signIn({ profile }) {
+      const allowedIds = (process.env.DISCORD_USER_IDS ?? '').trim().split(',')
+
+      if (undefined === profile || -1 === allowedIds.indexOf((profile as DiscordProfile).id)) {
+        return false
+      }
+
+      return true
+    },
+  },
 }
 
 export default authOptions
