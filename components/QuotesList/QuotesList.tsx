@@ -16,7 +16,7 @@ export default function QuotesList() {
     <div>
       Quotes:
       <ul>
-        {(data ?? []).map((quote) => (
+        {(data?.data ?? []).map((quote) => (
           <li key={quote._id}>{quote.title}</li>
         ))}
       </ul>

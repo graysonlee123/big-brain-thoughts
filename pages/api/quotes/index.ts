@@ -24,9 +24,16 @@ const handler: NextApiHandler = async function (req, res) {
 
       const quote = await db.collection('quotes').insertOne({ title: req.body.title })
 
-      res.json(quote)
+      res.json({
+        ok: true,
+        msg: 'Quote added succesfully.',
+        data: quote,
+      } as APIResponse)
     } catch (error) {
       console.error(error)
+      res
+        .status(500)
+        .json({ ok: false, msg: 'There was an issue adding that quote.' } as APIResponse)
     }
   } else {
     try {
@@ -35,9 +42,12 @@ const handler: NextApiHandler = async function (req, res) {
 
       const quotes = await db.collection('quotes').find({}).toArray()
 
-      res.json(quotes)
+      res.json({ ok: true, msg: 'Found quotes succesfully.', data: quotes } as APIResponse)
     } catch (error) {
       console.error(error)
+      res
+        .status(500)
+        .json({ ok: false, msg: 'There was an issue getting the quotes.' } as APIResponse)
     }
   }
 }
