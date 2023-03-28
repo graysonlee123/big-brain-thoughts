@@ -1,7 +1,7 @@
 import { NextApiHandler } from 'next'
-import clientPromise from 'utils/db'
+import clientPromise from 'lib/db'
 import { getServerSession } from 'next-auth/next'
-import { authOptions } from '../auth/[...nextauth]'
+import authOptions from '@lib/authOptions'
 
 const dbName = process.env.MONGOD_DB_NAME
 
