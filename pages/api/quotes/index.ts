@@ -31,11 +31,11 @@ const handler: NextApiHandler = async function (req, res) {
 
       /** Create a payload for the database. */
       const payload: Omit<Conversation, '_id'> = {
-        submitter: new ObjectId(user.id),
+        submitter_id: new ObjectId(user.id),
         quotes: [
           {
             content: req.body.title,
-            speaker: new ObjectId(user.id),
+            speaker_id: new ObjectId(user.id),
           },
         ],
         date_time: Date.now(),
@@ -56,8 +56,46 @@ const handler: NextApiHandler = async function (req, res) {
       const client = await clientPromise
       const db = await client.db(dbName)
 
+      /** Grab the quotes collection. */
+      const quotesCollection = db.collection('quotes')
+
       /** Get the conversations. */
-      const conversations = await db.collection<Conversation>('quotes').find({}).toArray()
+      const conversations = await quotesCollection
+        .aggregate([
+          {
+            $lookup: {
+              from: 'users',
+              localField: 'submitter_id',
+              foreignField: '_id',
+              as: 'submitter_data',
+            },
+          },
+          {
+            $unwind: '$submitter_data',
+          },
+          {
+            $unwind: '$quotes',
+          },
+          {
+            $lookup: {
+              from: 'users',
+              localField: 'quotes.speaker_id',
+              foreignField: '_id',
+              as: 'quotes.speaker_data',
+            },
+          },
+          {
+            $unwind: '$quotes.speaker_data',
+          },
+          {
+            $group: {
+              _id: '$_id',
+              submitter_data: { $first: '$submitter_data' },
+              quotes: { $push: '$quotes' },
+            },
+          },
+        ])
+        .toArray()
 
       /** Reply with the conversations. */
       res.json(createApiResponse(true, conversations, 'Found quotes succesfully.'))
