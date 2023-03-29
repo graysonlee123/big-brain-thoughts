@@ -29,9 +29,9 @@ const handler: NextApiHandler = async function (req, res) {
       const user = await queryUser(db, session.user?.email ?? '')
 
       /** Create a payload for the database. */
-      const payload: Conversation = {
+      const payload: Omit<Conversation, '_id'> = {
         submitter: new ObjectId(user.id),
-        conversation: [
+        quotes: [
           {
             content: req.body.title,
             speaker: new ObjectId(user.id),
@@ -41,7 +41,7 @@ const handler: NextApiHandler = async function (req, res) {
       }
 
       /** Submit to the database. */
-      const quote = await db.collection('quotes').insertOne(payload)
+      const quote = await db.collection<Omit<Conversation, '_id'>>('quotes').insertOne(payload)
 
       /** Respond to the client. */
       const reply: APIResponse = {
@@ -62,9 +62,15 @@ const handler: NextApiHandler = async function (req, res) {
       const client = await clientPromise
       const db = await client.db(dbName)
 
-      const quotes = await db.collection('quotes').find({}).toArray()
+      const data = await db.collection<Conversation>('quotes').find({}).toArray()
+      const conversations: Conversation[] = data.map(({ _id, quotes, submitter, date_time }) => ({
+        _id,
+        quotes,
+        submitter,
+        date_time,
+      }))
 
-      res.json({ ok: true, msg: 'Found quotes succesfully.', data: quotes } as APIResponse)
+      res.json({ ok: true, msg: 'Found quotes succesfully.', data: conversations } as APIResponse)
     } catch (error) {
       console.error(error)
       res

@@ -14,7 +14,8 @@ interface Quote {
 }
 
 interface Conversation {
+  _id: import('mongodb').ObjectId
   submitter: import('mongodb').ObjectId
-  conversation: Quote[]
+  quotes: Quote[]
   date_time: number
 }
