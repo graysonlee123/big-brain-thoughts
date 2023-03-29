@@ -57,13 +57,7 @@ const handler: NextApiHandler = async function (req, res) {
       const db = await client.db(dbName)
 
       /** Get the conversations. */
-      const data = await db.collection<Conversation>('quotes').find({}).toArray()
-      const conversations: Conversation[] = data.map(({ _id, quotes, submitter, date_time }) => ({
-        _id,
-        quotes,
-        submitter,
-        date_time,
-      }))
+      const conversations = await db.collection<Conversation>('quotes').find({}).toArray()
 
       /** Reply with the conversations. */
       res.json(createApiResponse(true, conversations, 'Found quotes succesfully.'))
