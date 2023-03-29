@@ -91,8 +91,12 @@ const handler: NextApiHandler = async function (req, res) {
             $group: {
               _id: '$_id',
               submitter_data: { $first: '$submitter_data' },
+              date_time: { $first: '$date_time' },
               quotes: { $push: '$quotes' },
             },
+          },
+          {
+            $sort: { date_time: -1 },
           },
         ])
         .toArray()
