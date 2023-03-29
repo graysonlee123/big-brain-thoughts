@@ -1,8 +1,9 @@
 import { NextApiHandler } from 'next'
-import clientPromise from 'lib/db'
 import { getServerSession } from 'next-auth/next'
-import authOptions from '@lib/authOptions'
 import { ObjectId } from 'mongodb'
+import authOptions from '@lib/authOptions'
+import queryUser from '@lib/queryUser'
+import clientPromise from '@lib/db'
 
 const dbName = process.env.MONGOD_DB_NAME
 
@@ -20,27 +21,36 @@ const handler: NextApiHandler = async function (req, res) {
 
   if (req.method === 'POST') {
     try {
+      /** Get the DB connection. */
       const client = await clientPromise
       const db = await client.db(dbName)
 
+      /** Get the user based on the session. */
+      const user = await queryUser(db, session.user?.email ?? '')
+
+      /** Create a payload for the database. */
       const payload: Conversation = {
-        submitter: new ObjectId(session.user.id),
+        submitter: new ObjectId(user.id),
         conversation: [
           {
             content: req.body.title,
-            speaker: new ObjectId(session.user.id),
+            speaker: new ObjectId(user.id),
           },
         ],
-        date_time: '12345623',
+        date_time: Date.now(),
       }
 
+      /** Submit to the database. */
       const quote = await db.collection('quotes').insertOne(payload)
 
-      res.json({
+      /** Respond to the client. */
+      const reply: APIResponse = {
         ok: true,
         msg: 'Quote added succesfully.',
         data: quote,
-      } as APIResponse)
+      }
+
+      res.json(reply)
     } catch (error) {
       console.error(error)
       res
