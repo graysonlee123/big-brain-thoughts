@@ -17,6 +17,7 @@ const authOptions: AuthOptions = {
     async signIn({ profile }) {
       const allowedIds = (process.env.DISCORD_USER_IDS ?? '').trim().split(',')
 
+      /** Only allow Discord account IDs that are in the environment. */
       if (undefined === profile || -1 === allowedIds.indexOf((profile as DiscordProfile).id)) {
         return false
       }
