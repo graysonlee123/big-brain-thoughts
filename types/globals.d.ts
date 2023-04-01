@@ -2,10 +2,10 @@ declare module globalThis {
   var _mongoClientPromise: Promise<MongoClient> | undefined
 }
 
-interface APIResponse<T = any> {
+interface APIResponse<T> {
   ok: boolean
+  data: T
   msg?: string
-  data?: T
 }
 
 interface Quote {

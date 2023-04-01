@@ -1,48 +1,28 @@
 import { useEffect, useState } from 'react'
 
 function useFetch<T>(url: URL | RequestInfo, options?: RequestInit) {
-  const [loading, setLoading] = useState(false)
-  const [data, setData] = useState<APIResponse<T> | null>(null)
   const [error, setError] = useState<unknown>(null)
+  const [loading, setLoading] = useState(true)
+  const [res, setRes] = useState<APIResponse<T> | null>(null)
 
   useEffect(() => {
-    let abortController: AbortController
-
     const fetchData = async () => {
       try {
-        setLoading(true)
-        setError(null)
-        setData(null)
+        const response = await fetch(url, options)
+        const json = await response.json()
 
-        abortController = new AbortController()
-
-        const res = await fetch(url, { ...options, signal: abortController.signal })
-
-        if (!res.ok) {
-          throw new Error('There was an error with that request.')
-        }
-
-        const json = await res.json()
-
-        setData(json)
-      } catch (e) {
-        if (!abortController.signal.aborted) {
-          console.error(e)
-          setError(e)
-        }
+        setRes(json)
+      } catch (error) {
+        setError(error)
       } finally {
         setLoading(false)
       }
     }
 
     fetchData()
-
-    return () => {
-      abortController.abort()
-    }
   }, [url, options])
 
-  return { data, loading, error }
+  return { error, loading, res }
 }
 
 export default useFetch

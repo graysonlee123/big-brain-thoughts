@@ -1,21 +1,19 @@
 import useFetch from 'hooks/useFetch'
 
 export default function QuotesList() {
-  const {
-    data: conversations,
-    loading,
-    error,
-  } = useFetch<ExpandedConversation[] | null>('/api/quotes')
+  const { res, loading, error } = useFetch<ExpandedConversation[]>('/api/quotes')
 
   if (loading) return <p>Loading...</p>
 
   if (error) return <p>Error...</p>
 
+  console.log('render')
+
   return (
     <div>
       Quotes:
       <ul>
-        {(conversations?.data ?? []).map((conversation) => (
+        {res!.data.map((conversation) => (
           <li key={conversation._id.toString()}>
             {conversation.quotes.map(({ content, speaker_data }, index) => (
               <p key={index}>
