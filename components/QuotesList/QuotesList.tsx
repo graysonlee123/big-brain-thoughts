@@ -7,8 +7,6 @@ export default function QuotesList() {
 
   if (error) return <p>Error...</p>
 
-  console.log('render')
-
   return (
     <div>
       Quotes:
