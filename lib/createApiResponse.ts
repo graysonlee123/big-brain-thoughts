@@ -1,4 +1,4 @@
-function createApiResponse<T = any>(ok: boolean, data?: T, msg?: string) {
+function createApiResponse<T>(ok: boolean, data: T, msg?: string) {
   const reply: APIResponse<T> = { ok, msg, data }
 
   return reply
