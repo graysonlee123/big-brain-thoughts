@@ -1,29 +1,32 @@
+import Convo from '@components/Convo'
+import { Box, Typography } from '@mui/material'
 import useFetch from 'hooks/useFetch'
+import useSortedConvos from 'hooks/useSortedConvos'
+import { Fragment } from 'react'
 
 export default function QuotesList() {
   const { res, loading, error } = useFetch<ExpandedConversation[]>('/api/quotes')
+
+  const sortedConvos = useSortedConvos(res?.data ?? [])
 
   if (loading) return <p>Loading...</p>
 
   if (error) return <p>Error...</p>
 
   return (
-    <div>
-      Quotes:
-      <ul>
-        {res!.data.map((conversation) => (
-          <li key={conversation._id.toString()}>
-            {conversation.quotes.map(({ content, speaker_data }, index) => (
-              <p key={index}>
-                <>
-                  &quot;{content}&quot; — {speaker_data.name}
-                </>
-              </p>
+    <Box>
+      {Object.entries(sortedConvos).map(([year, convos]) => (
+        <Fragment key={year}>
+          <Typography>{year}</Typography>
+          <ul>
+            {convos.map((convo) => (
+              <li key={convo._id.toString()}>
+                <Convo convo={convo} />
+              </li>
             ))}
-            <cite>Submitted by {conversation.submitter_data.name}</cite>
-          </li>
-        ))}
-      </ul>
-    </div>
+          </ul>
+        </Fragment>
+      ))}
+    </Box>
   )
 }
