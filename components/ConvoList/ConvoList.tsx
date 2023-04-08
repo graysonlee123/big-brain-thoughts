@@ -4,7 +4,7 @@ import useFetch from 'hooks/useFetch'
 import useSortedConvos from 'hooks/useSortedConvos'
 import { Fragment } from 'react'
 
-export default function QuotesList() {
+export default function ConvoList() {
   const { res, loading, error } = useFetch<ExpandedConversation[]>('/api/quotes')
 
   const sortedConvos = useSortedConvos(res?.data ?? [])

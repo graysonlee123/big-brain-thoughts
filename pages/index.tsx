@@ -1,8 +1,7 @@
 import type { NextPage } from 'next'
 import { useSession } from 'next-auth/react'
 import { Alert, AlertTitle, Box, CircularProgress, Typography } from '@mui/material'
-import AuthButton from '@components/AuthButton'
-import QuotesList from '@components/QuotesList'
+import ConvoList from '@components/ConvoList'
 import AddQuote from '@components/AddQuote'
 import SelectUser from '@components/SelectUser'
 import Layout from '@components/Layout'
@@ -34,7 +33,7 @@ const Home: NextPage = () => {
   return (
     <Layout>
       <AddQuote />
-      <QuotesList />
+      <ConvoList />
       <SelectUser />
     </Layout>
   )
