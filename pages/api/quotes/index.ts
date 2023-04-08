@@ -96,7 +96,7 @@ const handler: NextApiHandler = async function (req, res) {
             },
           },
           {
-            $sort: { date_time: -1 },
+            $sort: { date_time: 1 },
           },
         ])
         .toArray()
