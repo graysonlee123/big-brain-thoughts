@@ -1,4 +1,5 @@
 import { ChangeEvent, MouseEvent, useState } from 'react'
+import { Box, Button, TextField } from '@mui/material'
 
 export default function AddQuote() {
   const [quote, setQuote] = useState('')
@@ -40,14 +41,12 @@ export default function AddQuote() {
   }
 
   return (
-    <div>
-      <hr />
-      <input type="text" value={quote} onChange={handleChange} />
-      <button onClick={handleSubmit} disabled={loading}>
+    <Box>
+      <TextField value={quote} onChange={handleChange} />
+      <Button onClick={handleSubmit} disabled={loading} variant="contained">
         Add
-      </button>
+      </Button>
       {error ? <p>There was an error submitting that quote.</p> : null}
-      <hr />
-    </div>
+    </Box>
   )
 }
