@@ -2,17 +2,17 @@ import { useMemo } from 'react'
 
 export default function useSortedConvos(quotes: ExpandedConversation[]) {
   const sorted = useMemo(() => {
-    return quotes.reduce<{ [key: number]: ExpandedConversation[] }>((obj, item) => {
+    return quotes.reduce((map, item) => {
       const year = new Date(item.date_time).getFullYear()
 
-      if (undefined === obj[year]) {
-        obj[year] = []
+      if (!map.has(year)) {
+        map.set(year, [])
       }
 
-      obj[year].push(item)
+      map.get(year)!.push(item)
 
-      return obj
-    }, {})
+      return map
+    }, new Map<number, ExpandedConversation[]>())
   }, [quotes])
 
   return sorted

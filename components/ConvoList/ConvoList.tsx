@@ -13,9 +13,11 @@ export default function ConvoList() {
 
   if (error) return <p>Error...</p>
 
+  console.log({ sortedConvos })
+
   return (
     <Box>
-      {Object.entries(sortedConvos).map(([year, convos]) => (
+      {Array.from(sortedConvos).map(([year, convos]) => (
         <Fragment key={year}>
           <Typography>{year}</Typography>
           <ul>
