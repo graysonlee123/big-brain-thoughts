@@ -13,8 +13,6 @@ export default function ConvoList() {
 
   if (error) return <p>Error...</p>
 
-  console.log({ sortedConvos })
-
   return (
     <Box>
       {Array.from(sortedConvos).map(([year, convos]) => (
