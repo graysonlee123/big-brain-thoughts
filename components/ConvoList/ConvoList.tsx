@@ -4,14 +4,12 @@ import useFetch from 'hooks/useFetch'
 import useSortedConvos from 'hooks/useSortedConvos'
 import { Fragment } from 'react'
 
-export default function ConvoList() {
-  const { res, loading, error } = useFetch<ExpandedConversation[]>('/api/quotes')
+interface ConvoListProps {
+  convos: ExpandedConversation[]
+}
 
-  const sortedConvos = useSortedConvos(res?.data ?? [])
-
-  if (loading) return <p>Loading...</p>
-
-  if (error) return <p>Error...</p>
+export default function ConvoList({ convos }: ConvoListProps) {
+  const sortedConvos = useSortedConvos(convos)
 
   return (
     <Box>
