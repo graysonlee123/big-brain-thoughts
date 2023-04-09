@@ -1,3 +1,4 @@
+import UserLink from '@components/UserLink'
 import { displayDate } from '@lib/dateHelpers'
 import { Box, Paper, Stack, Typography } from '@mui/material'
 
@@ -13,12 +14,14 @@ export function Convo({ convo }: ConvoProps) {
           {convo.quotes.map((quote) => (
             <Box key={quote.content}>
               <Typography variant="h4">&quot;{quote.content}&quot;</Typography>
-              <Typography>— {quote.speaker_data.name ?? 'Unknown'}</Typography>
+              <Typography>
+                — <UserLink user={quote.speaker_data} />
+              </Typography>
             </Box>
           ))}
         </Stack>
         <Typography variant="caption">
-          Submitted by {convo.submitter_data.name ?? 'Unknown'} on {displayDate(convo.date_time)}
+          Submitted by <UserLink user={convo.submitter_data} /> on {displayDate(convo.date_time)}
         </Typography>
       </Paper>
     </Box>
