@@ -57,6 +57,7 @@ export function Navigation() {
                   horizontal: 'right',
                 }}
                 sx={{ mt: '3rem' }}
+                keepMounted
               >
                 <MenuItem onClick={() => signOut()}>Sign out</MenuItem>
               </Menu>
