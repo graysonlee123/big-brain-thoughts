@@ -33,6 +33,11 @@ const handler: NextApiHandler = async (req, res) => {
       const conversations = await quotesCollection
         .aggregate([
           {
+            $match: {
+              'quotes.speaker_id': new ObjectId(id),
+            },
+          },
+          {
             $lookup: {
               from: 'users',
               localField: 'submitter_id',
@@ -56,11 +61,6 @@ const handler: NextApiHandler = async (req, res) => {
           },
           {
             $unwind: '$quotes.speaker_data',
-          },
-          {
-            $match: {
-              'quotes.speaker_id': new ObjectId(id),
-            },
           },
           {
             $group: {
