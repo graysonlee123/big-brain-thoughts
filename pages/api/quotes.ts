@@ -16,7 +16,7 @@ const handler: NextApiHandler = async function (req, res) {
   const session = await getServerSession(req, res, authOptions)
 
   if (null === session) {
-    res.status(401).end()
+    res.status(401).json(createApiResponse(false, null, 'No session found.'))
     return
   }
 
