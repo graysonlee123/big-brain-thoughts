@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth'
 import AuthedLayout from '@components/AuthedLayout'
 import ConvoList from '@components/ConvoList'
 import authOptions from '@lib/authOptions'
+import { Container } from '@mui/material'
 
 interface UserIdPageProps {
   convos: ExpandedConversation[]
@@ -11,7 +12,9 @@ interface UserIdPageProps {
 const UserIdPage: NextPage<UserIdPageProps> = ({ convos }) => {
   return (
     <AuthedLayout>
-      <ConvoList convos={convos} />
+      <Container maxWidth="lg" sx={{ my: 8 }}>
+        <ConvoList convos={convos} />
+      </Container>
     </AuthedLayout>
   )
 }
