@@ -1,6 +1,6 @@
 import UserLink from '@components/UserLink'
 import { displayDate } from '@lib/dateHelpers'
-import { Box, Paper, Stack, Typography } from '@mui/material'
+import { Avatar, Box, Paper, Stack, Typography } from '@mui/material'
 
 interface ConvoProps {
   convo: ExpandedConversation
@@ -12,17 +12,25 @@ export function Convo({ convo }: ConvoProps) {
       <Paper sx={{ p: 4 }}>
         <Stack direction="column" gap={2}>
           {convo.quotes.map((quote) => (
-            <Box key={quote.content}>
-              <Typography variant="h4">&quot;{quote.content}&quot;</Typography>
-              <Typography>
-                — <UserLink user={quote.speaker_data} />
-              </Typography>
-            </Box>
+            <Stack direction="row" gap={2} alignItems="start" key={quote.content}>
+              <Box>
+                <Avatar src={quote.speaker_data.image} alt={quote.speaker_data.name} />
+              </Box>
+              <Box>
+                <Typography variant="h5">&quot;{quote.content}&quot;</Typography>
+                <Typography>
+                  — <UserLink user={quote.speaker_data} />
+                </Typography>
+              </Box>
+            </Stack>
           ))}
         </Stack>
-        <Typography variant="caption">
-          Submitted by <UserLink user={convo.submitter_data} /> on {displayDate(convo.date_time)}
-        </Typography>
+        <Box sx={{ mt: 4 }}>
+          <Typography variant="caption">
+            Submitted by <UserLink user={convo.submitter_data} /> &bull;{' '}
+            {displayDate(convo.date_time)}
+          </Typography>
+        </Box>
       </Paper>
     </Box>
   )
