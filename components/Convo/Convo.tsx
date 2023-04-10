@@ -10,7 +10,7 @@ export function Convo({ convo }: ConvoProps) {
   return (
     <Box>
       <Paper sx={{ p: 4 }}>
-        <Stack direction="column" gap={2}>
+        <Stack direction="column" gap={3}>
           {convo.quotes.map((quote) => (
             <Stack direction="row" gap={2} alignItems="start" key={quote.content}>
               <Box>
