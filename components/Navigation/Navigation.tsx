@@ -12,7 +12,9 @@ import {
   Stack,
   Toolbar,
   Tooltip,
+  Typography,
 } from '@mui/material'
+import { FormatQuote as QuoteIcon } from '@mui/icons-material'
 import Avatar from '@components/Avatar'
 
 export function Navigation() {
@@ -32,12 +34,26 @@ export function Navigation() {
     <AppBar position="static">
       <Container maxWidth="md">
         <Toolbar disableGutters>
-          <Stack direction="row">
-            <Button onClick={() => router.push('/')}>Home</Button>
-            {status !== 'authenticated' && <Button onClick={() => signIn('discord')}>Login</Button>}
-          </Stack>
-          <Box sx={{ flexGrow: 1 }}></Box>
-          {status === 'authenticated' && (
+          <Box sx={{ mr: 1 }}>
+            <QuoteIcon sx={{ display: 'block' }} />
+          </Box>
+          <Typography
+            variant="h6"
+            component="a"
+            href="/"
+            sx={{
+              flexGrow: 1,
+              color: 'inherit',
+              fontWeight: 700,
+              textDecoration: 'none',
+            }}
+            noWrap
+          >
+            Big Brain Thoughts
+          </Typography>
+          {status !== 'authenticated' ? (
+            <Button onClick={() => signIn('discord')}>Login</Button>
+          ) : (
             <>
               <Tooltip title="Account details">
                 <IconButton onClick={handleOpenUserMenu} sx={{ padding: 0 }}>
