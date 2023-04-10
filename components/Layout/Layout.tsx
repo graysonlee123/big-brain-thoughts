@@ -10,7 +10,7 @@ export function Layout({ children }: LayoutComponentProps) {
   return (
     <>
       <Navigation />
-      <Container maxWidth="lg">{children}</Container>
+      {children}
     </>
   )
 }

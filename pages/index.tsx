@@ -5,6 +5,7 @@ import AddQuote from '@components/AddQuote'
 import SelectUser from '@components/SelectUser'
 import AuthedLayout from '@components/AuthedLayout/AuthedLayout'
 import authOptions from '@lib/authOptions'
+import { Container } from '@mui/material'
 
 interface HomePageProps {
   convos: ExpandedConversation[]
@@ -13,9 +14,9 @@ interface HomePageProps {
 const Home: NextPage<HomePageProps> = ({ convos }) => {
   return (
     <AuthedLayout>
-      <AddQuote />
-      <SelectUser />
-      <ConvoList convos={convos} />
+      <Container maxWidth="lg" sx={{ my: 8 }}>
+        <ConvoList convos={convos} />
+      </Container>
     </AuthedLayout>
   )
 }
