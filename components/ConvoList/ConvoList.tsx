@@ -1,9 +1,8 @@
-import Convo from '@components/Convo'
-import { Box, Grid, Stack, Typography } from '@mui/material'
-import useFetch from 'hooks/useFetch'
-import useSortedConvos from 'hooks/useSortedConvos'
 import { Fragment } from 'react'
+import { Box, Stack, Typography } from '@mui/material'
 import Masonry from '@mui/lab/Masonry'
+import Convo from '@components/Convo'
+import useSortedConvos from 'hooks/useSortedConvos'
 
 interface ConvoListProps {
   convos: ExpandedConversation[]

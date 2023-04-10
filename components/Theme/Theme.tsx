@@ -1,6 +1,6 @@
+import { ReactNode } from 'react'
 import { ThemeProvider } from '@mui/system'
 import { createTheme } from '@mui/material/styles'
-import { ReactNode } from 'react'
 
 interface ThemeComponentProps {
   children: ReactNode

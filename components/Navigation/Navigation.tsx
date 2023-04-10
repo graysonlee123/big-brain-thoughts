@@ -1,6 +1,6 @@
 import { MouseEvent, useState } from 'react'
+import { useRouter } from 'next/router'
 import { signIn, signOut, useSession } from 'next-auth/react'
-import Avatar from '@components/Avatar'
 import {
   AppBar,
   Box,
@@ -13,7 +13,7 @@ import {
   Toolbar,
   Tooltip,
 } from '@mui/material'
-import { useRouter } from 'next/router'
+import Avatar from '@components/Avatar'
 
 export function Navigation() {
   const [anchorElUser, setAnchorElUser] = useState<HTMLElement | null>(null)

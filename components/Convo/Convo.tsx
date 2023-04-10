@@ -1,6 +1,6 @@
+import { Avatar, Box, Paper, Stack, Typography } from '@mui/material'
 import UserLink from '@components/UserLink'
 import { displayDate } from '@lib/dateHelpers'
-import { Avatar, Box, Paper, Stack, Typography } from '@mui/material'
 
 interface ConvoProps {
   convo: ExpandedConversation

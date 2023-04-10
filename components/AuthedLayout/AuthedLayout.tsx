@@ -1,7 +1,7 @@
-import Layout from '@components/Layout'
-import { Alert, AlertTitle, Box, CircularProgress, Container, Typography } from '@mui/material'
-import { useSession } from 'next-auth/react'
 import { ReactNode } from 'react'
+import { useSession } from 'next-auth/react'
+import { Alert, AlertTitle, Box, CircularProgress, Container, Typography } from '@mui/material'
+import Layout from '@components/Layout'
 
 interface AuthedLayoutProps {
   children: ReactNode
