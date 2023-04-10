@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth'
 import ConvoList from '@components/ConvoList'
 import AddQuote from '@components/AddQuote'
 import SelectUser from '@components/SelectUser'
-import AuthedLayout from '@components/AuthedLayout/AuthedLayout'
+import AuthedLayout from '@components/AuthedLayout'
 import authOptions from '@lib/authOptions'
 import { Container } from '@mui/material'
 

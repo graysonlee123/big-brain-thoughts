@@ -1,6 +1,6 @@
 import { GetServerSideProps, NextPage } from 'next'
 import { getServerSession } from 'next-auth'
-import AuthedLayout from '@components/AuthedLayout/AuthedLayout'
+import AuthedLayout from '@components/AuthedLayout'
 import ConvoList from '@components/ConvoList'
 import authOptions from '@lib/authOptions'
 
