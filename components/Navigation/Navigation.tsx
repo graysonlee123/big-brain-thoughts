@@ -37,20 +37,21 @@ export function Navigation() {
           <Box sx={{ mr: 1 }}>
             <QuoteIcon sx={{ display: 'block' }} />
           </Box>
-          <Typography
-            variant="h6"
-            component="a"
-            href="/"
-            sx={{
-              flexGrow: 1,
-              color: 'inherit',
-              fontWeight: 700,
-              textDecoration: 'none',
-            }}
-            noWrap
-          >
-            Big Brain Thoughts
-          </Typography>
+          <Box sx={{ flexGrow: 1 }}>
+            <Typography
+              variant="h6"
+              component="a"
+              href="/"
+              sx={{
+                color: 'inherit',
+                fontWeight: 700,
+                textDecoration: 'none',
+              }}
+              noWrap
+            >
+              Big Brain Thoughts
+            </Typography>
+          </Box>
           {status !== 'authenticated' ? (
             <Button onClick={() => signIn('discord')}>Login</Button>
           ) : (
