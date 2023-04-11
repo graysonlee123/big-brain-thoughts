@@ -11,7 +11,7 @@ if (undefined === dbName) {
   throw new Error('Invalid / Missing environment variable: "MONGOD_DB_NAME"')
 }
 
-const handler: NextApiHandler = async (req, res) => {
+const handler: NextApiHandler<APIResponse<unknown>> = async (req, res) => {
   const session = await getServerSession(req, res, authOptions)
 
   if (null === session) {

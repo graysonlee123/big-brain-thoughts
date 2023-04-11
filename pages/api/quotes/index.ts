@@ -12,7 +12,7 @@ if (undefined === dbName) {
   throw new Error('Invalid / Missing environment variable: "MONGOD_DB_NAME"')
 }
 
-const handler: NextApiHandler = async function (req, res) {
+const handler: NextApiHandler<APIResponse<unknown>> = async function (req, res) {
   const session = await getServerSession(req, res, authOptions)
 
   if (null === session) {
@@ -50,7 +50,7 @@ const handler: NextApiHandler = async function (req, res) {
       console.error(error)
       res.status(500).json(createApiResponse(false, error, 'There was an issue adding that quote.'))
     }
-  } else {
+  } else if (req.method === 'GET') {
     try {
       /** Get the DB connection. */
       const client = await clientPromise
@@ -109,6 +109,11 @@ const handler: NextApiHandler = async function (req, res) {
         .status(500)
         .json(createApiResponse(false, error, 'There was an issue getting the quotes.'))
     }
+  } else {
+    res
+      .status(404)
+      .json(createApiResponse(false, null, `There is no ${req.method} method for this route.`))
+    return
   }
 }
 
