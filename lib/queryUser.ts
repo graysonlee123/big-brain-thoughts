@@ -1,5 +1,3 @@
-import { User } from 'next-auth'
-import { Db, WithId } from 'mongodb'
 import ApiError from './api/apiError'
 import getDbCollection from './api/getDbCollection'
 
