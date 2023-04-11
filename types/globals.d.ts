@@ -8,13 +8,6 @@ interface APIResponse<T> {
   msg?: string
 }
 
-interface DatabaseUser {
-  _id: import('mongodb').ObjectId
-  name: string
-  email: string
-  image: string
-}
-
 interface Quote {
   speaker_id: import('mongodb').ObjectId
   content: string
@@ -28,10 +21,10 @@ interface Conversation {
 }
 
 interface ExpandedQuote extends Quote {
-  speaker_data: DatabaseUser
+  speaker_data: import('next-auth').User
 }
 
 interface ExpandedConversation extends Conversation {
-  submitter_data: DatabaseUser
+  submitter_data: import('next-auth').User
   quotes: ExpandedQuote[]
 }

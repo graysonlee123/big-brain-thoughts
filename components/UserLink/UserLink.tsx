@@ -1,7 +1,8 @@
 import { Link } from '@mui/material'
+import { User } from 'next-auth'
 
 interface UserLinkProps {
-  user: DatabaseUser
+  user: User
 }
 
 export default function UserLink({ user }: UserLinkProps) {
