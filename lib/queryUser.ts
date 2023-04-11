@@ -1,5 +1,7 @@
 import { User } from 'next-auth'
-import { Db } from 'mongodb'
+import { Db, WithId } from 'mongodb'
+import ApiError from './api/apiError'
+import getDbCollection from './api/getDbCollection'
 
 /**
  * Gets the user, including their ID, from the database.
@@ -8,25 +10,18 @@ import { Db } from 'mongodb'
  * @returns A promise that resolves with user data.
  */
 function queryUser(db: Db, email: string) {
-  return new Promise<User>(async (resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     let user = null
 
     try {
-      user = await db.collection('users').findOne({ email: email })
+      const usersCollection = await getDbCollection('users')
+      user = await usersCollection.findOne({ email })
     } catch (error) {
-      reject(new Error('There was an issue looking for users in the database.'))
-      return
+      throw new ApiError(500, 'There was an issue looking for users in the database.')
     }
 
     if (user) {
-      const payload: User = {
-        id: user._id.toString(),
-        email: user.email,
-        image: user.image,
-        name: user.name,
-      }
-
-      resolve(payload)
+      resolve(user)
     } else {
       reject(new Error('Could not find a user based on that email.'))
     }
