@@ -1,8 +1,13 @@
 import { useMemo } from 'react'
 
-export default function useSortedConvos(quotes: ExpandedConversation[]) {
-  const sorted = useMemo(() => {
-    return quotes.reduce((map, item) => {
+/**
+ * Organizes an array of conversations into a map with its keys as years.
+ * @param convos The array of conversations.
+ * @returns A map, with each key representing a year.
+ */
+export default function useSortedConvos(convos: ExpandedConversation[]) {
+  const sortedConvos = useMemo(() => {
+    return convos.reduce((map, item) => {
       const year = new Date(item.date_time).getFullYear()
 
       if (!map.has(year)) {
@@ -13,7 +18,7 @@ export default function useSortedConvos(quotes: ExpandedConversation[]) {
 
       return map
     }, new Map<number, ExpandedConversation[]>())
-  }, [quotes])
+  }, [convos])
 
-  return sorted
+  return sortedConvos
 }

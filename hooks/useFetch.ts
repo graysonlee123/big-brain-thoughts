@@ -1,5 +1,11 @@
 import { useEffect, useState } from 'react'
 
+/**
+ * Fetches a URL.
+ * @param url The URL to fetch.
+ * @param options The fetch options.
+ * @returns The error, loading, and response states.
+ */
 function useFetch<T>(url: URL | RequestInfo, options?: RequestInit) {
   const [error, setError] = useState<unknown>(null)
   const [loading, setLoading] = useState(true)
