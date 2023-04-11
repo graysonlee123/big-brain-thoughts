@@ -15,7 +15,7 @@ export function Convo({ convo }: ConvoProps) {
             <Stack direction="row" gap={2} alignItems="start" key={quote.content}>
               <Box>
                 <Avatar
-                  src={quote.speaker_data.image ?? 'https://cdn.discordapp.com/embed/avatars/2.png'}
+                  src={quote.speaker_data.image ?? 'https://cdn.discordapp.com/embed/avatars/1.png'}
                   alt={quote.speaker_data.name}
                 />
               </Box>
