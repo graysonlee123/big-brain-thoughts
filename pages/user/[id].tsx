@@ -5,11 +5,11 @@ import ConvoList from '@components/ConvoList'
 import authOptions from '@lib/authOptions'
 import { Container } from '@mui/material'
 
-interface UserIdPageProps {
+interface UserPageProps {
   convos: ExpandedConversation[]
 }
 
-const UserIdPage: NextPage<UserIdPageProps> = ({ convos }) => {
+const UserPage: NextPage<UserPageProps> = ({ convos }) => {
   return (
     <AuthedLayout>
       <Container maxWidth="lg" sx={{ my: 8 }}>
@@ -48,4 +48,4 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, query }
   }
 }
 
-export default UserIdPage
+export default UserPage

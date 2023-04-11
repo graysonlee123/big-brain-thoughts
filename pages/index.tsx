@@ -9,7 +9,7 @@ interface HomePageProps {
   convos: ExpandedConversation[]
 }
 
-const Home: NextPage<HomePageProps> = ({ convos }) => {
+const HomePage: NextPage<HomePageProps> = ({ convos }) => {
   return (
     <AuthedLayout>
       <Container maxWidth="lg" sx={{ my: 8 }}>
@@ -47,4 +47,4 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   }
 }
 
-export default Home
+export default HomePage
