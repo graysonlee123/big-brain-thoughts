@@ -9,7 +9,7 @@ import getDbCollection from './api/getDbCollection'
  * @param email The user email to lookup.
  * @returns A promise that resolves with user data.
  */
-function queryUser(db: Db, email: string) {
+function queryUser(email: string) {
   return new Promise(async (resolve, reject) => {
     let user = null
 

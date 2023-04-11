@@ -68,7 +68,7 @@ const post: ApiHandler = async (req, res, session) => {
   const db = await client.db(dbName)
 
   /** Get the user based on the session. */
-  const user = (await queryUser(db, session.user?.email ?? '')) as User
+  const user = (await queryUser(session.user?.email ?? '')) as User
 
   /** Create a payload for the database. */
   const payload = {
