@@ -6,7 +6,7 @@ import AuthedLayout from '@components/AuthedLayout'
 import authOptions from '@lib/authOptions'
 
 interface HomePageProps {
-  convos: ExpandedConversation[]
+  convos: Conversation[]
 }
 
 const HomePage: NextPage<HomePageProps> = ({ convos }) => {
@@ -22,7 +22,7 @@ const HomePage: NextPage<HomePageProps> = ({ convos }) => {
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   const session = await getServerSession(req, res, authOptions)
   const baseURL = process.env.NEXTAUTH_URL
-  let convos: ExpandedConversation[] = []
+  let convos: Conversation[] = []
 
   if (!baseURL) console.warn('No `NEXTAUTH_URL` environment variable!')
 
@@ -31,7 +31,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
       const res = await fetch(`${baseURL}/api/quotes`, {
         headers: { Cookie: req.headers.cookie ?? '' },
       })
-      const json: APIResponse<ExpandedConversation[]> = await res.json()
+      const json: APIResponse<Conversation[]> = await res.json()
 
       convos = json.data
     } catch (error) {

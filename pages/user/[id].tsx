@@ -6,7 +6,7 @@ import authOptions from '@lib/authOptions'
 import { Container } from '@mui/material'
 
 interface UserPageProps {
-  convos: ExpandedConversation[]
+  convos: Conversation[]
 }
 
 const UserPage: NextPage<UserPageProps> = ({ convos }) => {
@@ -23,7 +23,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, query }
   const session = await getServerSession(req, res, authOptions)
   const baseURL = process.env.NEXTAUTH_URL
   const id = query.id
-  let convos: ExpandedConversation[] = []
+  let convos: Conversation[] = []
 
   if (!baseURL) console.warn('No `NEXTAUTH_URL` environment variable!')
 
@@ -32,7 +32,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, query }
       const res = await fetch(`${baseURL}/api/quotes/user/${id}`, {
         headers: { Cookie: req.headers.cookie ?? '' },
       })
-      const json: APIResponse<ExpandedConversation[]> = await res.json()
+      const json: APIResponse<Conversation[]> = await res.json()
 
       convos = json.data
     } catch (error) {

@@ -5,7 +5,7 @@ import Convo from '@components/Convo'
 import useSortedConvos from 'hooks/useSortedConvos'
 
 interface ConvoListProps {
-  convos: ExpandedConversation[]
+  convos: Conversation[]
 }
 
 export default function ConvoList({ convos }: ConvoListProps) {

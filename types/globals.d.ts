@@ -8,23 +8,17 @@ interface APIResponse<T> {
   msg?: string
 }
 
-interface Quote {
-  speaker_id: import('mongodb').ObjectId
-  content: string
-}
-
-interface Conversation {
-  _id: import('mongodb').ObjectId
+interface ConversationBase {
   submitter_id: import('mongodb').ObjectId
-  quotes: Quote[]
+  quotes: {
+    speaker_id: import('mongodb').ObjectId
+    content: string
+  }[]
   date_time: number
 }
 
-interface ExpandedQuote extends Quote {
-  speaker_data: import('next-auth').User
-}
-
-interface ExpandedConversation extends Conversation {
+interface Conversation extends ConversationBase {
+  _id: import('mongodb').ObjectId
   submitter_data: import('next-auth').User
-  quotes: ExpandedQuote[]
+  quotes: (ConversationBase['quotes'][number] & { speaker_data: import('next-auth').User })[]
 }

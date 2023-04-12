@@ -20,7 +20,6 @@ import Avatar from '@components/Avatar'
 export function Navigation() {
   const [anchorElUser, setAnchorElUser] = useState<HTMLElement | null>(null)
   const { status } = useSession()
-  const router = useRouter()
 
   function handleOpenUserMenu(e: MouseEvent<HTMLElement>) {
     setAnchorElUser(e.currentTarget)

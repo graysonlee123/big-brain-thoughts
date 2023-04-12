@@ -1,14 +1,10 @@
 import { ObjectId } from 'mongodb'
 import queryUser from '@lib/queryUser'
-import clientPromise from '@lib/db'
 import createApiResponse from '@lib/createApiResponse'
 import apiHandler, { ApiHandler } from '@lib/api/apiHandler'
-import getDbName from '@lib/api/getDbName'
 import ApiAuthError from '@lib/api/apiAuthorizationError'
 import getDbCollection from '@lib/api/getDbCollection'
 import { User } from 'next-auth'
-
-const dbName = getDbName()
 
 const get: ApiHandler = async (req, res) => {
   const quotesCollection = await getDbCollection('quotes')
@@ -63,15 +59,14 @@ const post: ApiHandler = async (req, res, session) => {
     throw new ApiAuthError(req)
   }
 
-  /** Get the DB connection. */
-  const client = await clientPromise
-  const db = await client.db(dbName)
+  /** Get the quotes collection. */
+  const quotesCollection = await getDbCollection('quotes')
 
   /** Get the user based on the session. */
   const user = (await queryUser(session.user?.email ?? '')) as User
 
   /** Create a payload for the database. */
-  const payload = {
+  const payload: ConversationBase = {
     submitter_id: new ObjectId(user._id),
     quotes: [
       {
@@ -83,10 +78,10 @@ const post: ApiHandler = async (req, res, session) => {
   }
 
   /** Submit to the database. */
-  const quote = await db.collection('quotes').insertOne(payload)
+  const result = await quotesCollection.insertOne(payload)
 
   /** Reply to the client. */
-  res.json(createApiResponse(true, quote, 'Quote added succesfully.'))
+  res.json(createApiResponse(true, result, 'Quote added succesfully.'))
 }
 
 export default apiHandler({

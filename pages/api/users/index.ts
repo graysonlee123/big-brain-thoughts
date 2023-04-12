@@ -1,17 +1,13 @@
-import clientPromise from '@lib/db'
 import createApiResponse from '@lib/createApiResponse'
-import getDbName from '@lib/api/getDbName'
 import apiHandler, { ApiHandler } from '@lib/api/apiHandler'
-
-const dbName = getDbName()
+import getDbCollection from '@lib/api/getDbCollection'
 
 const get: ApiHandler = async (req, res) => {
-  /** Get the DB connection. */
-  const client = await clientPromise
-  const db = client.db(dbName)
+  /** Get the users collection. */
+  const usersCollection = await getDbCollection('users')
 
   /** Grab the users collection. */
-  const users = await db.collection('users').find({}).toArray()
+  const users = await usersCollection.find({}).toArray()
 
   /** Reply to the client. */
   res.json(createApiResponse(true, users, 'Found users succesfully.'))

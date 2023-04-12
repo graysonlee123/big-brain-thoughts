@@ -1,18 +1,11 @@
 import { ObjectId } from 'mongodb'
 import createApiResponse from '@lib/createApiResponse'
-import clientPromise from '@lib/db'
-import getDbName from '@lib/api/getDbName'
 import apiHandler, { ApiHandler } from '@lib/api/apiHandler'
-
-const dbName = getDbName()
+import getDbCollection from '@lib/api/getDbCollection'
 
 const get: ApiHandler = async (req, res) => {
-  /** Get the DB connection. */
-  const client = await clientPromise
-  const db = await client.db(dbName)
-
   /** Grab the quotes collection. */
-  const quotesCollection = db.collection('quotes')
+  const quotesCollection = await getDbCollection('quotes')
 
   /** Get the quotes that contain the user id from the request query. */
   const id = req.query.id as string

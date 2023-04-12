@@ -3,7 +3,7 @@ import UserLink from '@components/UserLink'
 import { displayDate } from '@lib/dateHelpers'
 
 interface ConvoProps {
-  convo: ExpandedConversation
+  convo: Conversation
 }
 
 export function Convo({ convo }: ConvoProps) {
