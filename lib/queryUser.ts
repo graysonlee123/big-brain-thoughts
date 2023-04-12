@@ -1,5 +1,6 @@
 import ApiError from './api/apiError'
 import getDbCollection from './api/getDbCollection'
+import getEnvVar from './getEnvVar'
 
 /**
  * Gets the user, including their ID, from the database.
@@ -12,7 +13,7 @@ function queryUser(email: string) {
     let user = null
 
     try {
-      const usersCollection = await getDbCollection('users')
+      const usersCollection = await getDbCollection(getEnvVar('MONGODB_USERS_COLLECTION'))
       user = await usersCollection.findOne({ email })
     } catch (error) {
       throw new ApiError(500, 'There was an issue looking for users in the database.')

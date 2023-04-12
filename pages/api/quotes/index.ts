@@ -69,7 +69,7 @@ const post: ApiHandler<InsertOneResult> = async (req, res, session) => {
   }
 
   /** Get the quotes collection. */
-  const quotesCollection = await getDbCollection('quotes')
+  const quotesCollection = await getDbCollection(getEnvVar('MONGODB_QUOTES_COLLECTION'))
 
   /** Get the user based on the session. */
   const user = (await queryUser(session.user?.email ?? '')) as User
