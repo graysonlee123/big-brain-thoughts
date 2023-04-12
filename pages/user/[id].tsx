@@ -3,7 +3,7 @@ import { Container } from '@mui/material'
 import AuthedLayout from '@components/AuthedLayout'
 import ConvoList from '@components/ConvoList'
 import getEnvVar from '@lib/getEnvVar'
-import gsspSessionApiFetch from '@lib/getServerSidePropsHelper'
+import gsspSessionApiFetch from '@lib/gsspSessionApiFetch'
 
 interface SingleUserPageProps {
   data: Conversation[]
