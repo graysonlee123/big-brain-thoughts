@@ -1,63 +1,33 @@
-import { GetServerSideProps, NextPage } from 'next'
-import { getServerSession } from 'next-auth'
+import { GetServerSideProps, InferGetServerSidePropsType, NextPage } from 'next'
 import { Container } from '@mui/material'
 import AuthedLayout from '@components/AuthedLayout'
 import Convo from '@components/Convo'
-import authOptions from '@lib/authOptions'
 import getEnvVar from '@lib/getEnvVar'
+import gsspSessionApiFetch from '@lib/getServerSidePropsHelper'
 
 interface SingleQuotePageProps {
-  convo: Conversation
+  data: Conversation
 }
 
-const SingleQuotePage: NextPage<SingleQuotePageProps> = ({ convo }) => {
+const SingleQuotePage: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({
+  data,
+}) => {
   return (
     <AuthedLayout>
       <Container maxWidth="sm" sx={{ my: 8 }}>
-        <Convo convo={convo} />
+        <Convo convo={data} />
       </Container>
     </AuthedLayout>
   )
 }
 
-export const getServerSideProps: GetServerSideProps<SingleQuotePageProps> = async ({
-  req,
-  res,
-  query,
-}) => {
-  const session = await getServerSession(req, res, authOptions)
-  const baseURL = getEnvVar('NEXTAUTH_URL')
-  const id = query.id as string
-  let convo
+export const getServerSideProps: GetServerSideProps<SingleQuotePageProps> = async (context) => {
+  const id = context.query.id as string
 
-  if (session) {
-    try {
-      const res = await fetch(`${baseURL}/api/quotes/${id}`, {
-        headers: { Cookie: req.headers.cookie ?? '' },
-      })
-      const json: APIResponse<Conversation | null> = await res.json()
-
-      convo = json.data
-    } catch (error) {
-      console.error(error)
-      return {
-        notFound: true,
-      }
-    }
-  }
-
-  if (!convo) {
-    return {
-      notFound: true,
-    }
-  }
-
-  return {
-    props: {
-      convo,
-      session,
-    },
-  }
+  return await gsspSessionApiFetch<SingleQuotePageProps['data']>(
+    context,
+    `${getEnvVar('NEXTAUTH_URL')}/api/quotes/${id}`
+  )
 }
 
 export default SingleQuotePage

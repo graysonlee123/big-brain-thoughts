@@ -1,49 +1,29 @@
-import type { GetServerSideProps, NextPage } from 'next'
-import { getServerSession } from 'next-auth'
+import type { GetServerSideProps, InferGetServerSidePropsType, NextPage } from 'next'
 import { Container } from '@mui/material'
 import ConvoList from '@components/ConvoList'
 import AuthedLayout from '@components/AuthedLayout'
-import authOptions from '@lib/authOptions'
 import getEnvVar from '@lib/getEnvVar'
+import gsspSessionApiFetch from '@lib/getServerSidePropsHelper'
 
 interface HomePageProps {
-  convos: Conversation[]
+  data: Conversation[]
 }
 
-const HomePage: NextPage<HomePageProps> = ({ convos }) => {
+const HomePage: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ data }) => {
   return (
     <AuthedLayout>
       <Container maxWidth="lg" sx={{ my: 8 }}>
-        <ConvoList convos={convos} />
+        <ConvoList convos={data} />
       </Container>
     </AuthedLayout>
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-  const session = await getServerSession(req, res, authOptions)
-  const baseURL = getEnvVar('NEXTAUTH_URL')
-  let convos: Conversation[] = []
-
-  if (session) {
-    try {
-      const res = await fetch(`${baseURL}/api/quotes`, {
-        headers: { Cookie: req.headers.cookie ?? '' },
-      })
-      const json: APIResponse<Conversation[]> = await res.json()
-
-      convos = json.data
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
-  return {
-    props: {
-      convos,
-      session,
-    },
-  }
+export const getServerSideProps: GetServerSideProps<HomePageProps> = async (context) => {
+  return await gsspSessionApiFetch<HomePageProps['data']>(
+    context,
+    `${getEnvVar('NEXTAUTH_URL')}/api/quotes`
+  )
 }
 
 export default HomePage

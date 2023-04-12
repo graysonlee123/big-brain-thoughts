@@ -16,7 +16,7 @@ const get: ApiHandler<Conversation[] | null> = async (req, res) => {
   const user = await usersCollection.findOne({ _id: new ObjectId(id) })
 
   if (null === user) {
-    res.json(createApiResponse(false, null, 'No user by that ID was found.'))
+    res.status(404).json(createApiResponse(false, null, 'No user by that ID was found.'))
     return
   }
 

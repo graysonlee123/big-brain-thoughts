@@ -1,4 +1,4 @@
-import { Avatar, Box, Paper, Stack, Typography } from '@mui/material'
+import { Avatar, Box, Link, Paper, Stack, Typography } from '@mui/material'
 import UserLink from '@components/UserLink'
 import { displayDate } from '@lib/dateHelpers'
 
@@ -31,7 +31,8 @@ export function Convo({ convo }: ConvoProps) {
         <Box sx={{ mt: 4 }}>
           <Typography variant="caption">
             Submitted by <UserLink user={convo.submitter_data} /> &bull;{' '}
-            {displayDate(convo.date_time)}
+            {displayDate(convo.date_time)}{' '}
+            <Link href={`/conversation/${convo._id.toString()}`}>Open</Link>
           </Typography>
         </Box>
       </Paper>

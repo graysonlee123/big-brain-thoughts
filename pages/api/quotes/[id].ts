@@ -57,7 +57,7 @@ const get: ApiHandler<Conversation | null> = async (req, res) => {
     .toArray()) as Conversation[]
 
   if (convos.length === 0) {
-    res.json(createApiResponse(false, null, 'Could not find that conversation.'))
+    res.status(404).json(createApiResponse(false, null, 'Could not find that conversation.'))
     return
   }
 
