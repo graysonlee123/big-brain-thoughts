@@ -1,5 +1,6 @@
 import { AppProps } from 'next/app'
 import { SessionProvider } from 'next-auth/react'
+import { SnackbarProvider } from 'notistack'
 import CssBaseline from '@mui/material/CssBaseline'
 import Theme from '@components/Theme'
 import '@fontsource/roboto/300.css'
@@ -12,7 +13,9 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
     <SessionProvider session={session}>
       <Theme>
         <CssBaseline>
-          <Component {...pageProps} />
+          <SnackbarProvider maxSnack={3}>
+            <Component {...pageProps} />
+          </SnackbarProvider>
         </CssBaseline>
       </Theme>
     </SessionProvider>
