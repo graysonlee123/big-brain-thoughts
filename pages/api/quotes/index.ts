@@ -1,14 +1,19 @@
-import { ObjectId } from 'mongodb'
+import { InsertOneResult, ObjectId } from 'mongodb'
 import queryUser from '@lib/queryUser'
 import createApiResponse from '@lib/createApiResponse'
 import apiHandler, { ApiHandler } from '@lib/api/apiHandler'
 import ApiAuthError from '@lib/api/apiAuthorizationError'
 import getDbCollection from '@lib/api/getDbCollection'
 import { User } from 'next-auth'
+import getEnvVar from '@lib/getEnvVar'
 
-const get: ApiHandler = async (req, res) => {
-  const quotesCollection = await getDbCollection('quotes')
-  const conversations = await quotesCollection
+/**
+ * Gets all of the conversations.
+ * @returns An array of conversations.
+ */
+const get: ApiHandler<Conversation[]> = async (req, res) => {
+  const quotesCollection = await getDbCollection(getEnvVar('MONGODB_QUOTES_COLLECTION'))
+  const conversations = (await quotesCollection
     .aggregate([
       {
         $lookup: {
@@ -47,13 +52,17 @@ const get: ApiHandler = async (req, res) => {
         $sort: { date_time: -1 },
       },
     ])
-    .toArray()
+    .toArray()) as Conversation[]
 
   /** Reply with the conversations. */
   res.json(createApiResponse(true, conversations, 'Found quotes succesfully.'))
 }
 
-const post: ApiHandler = async (req, res, session) => {
+/**
+ * Post a new conversation.
+ * @returns The new conversation.
+ */
+const post: ApiHandler<InsertOneResult> = async (req, res, session) => {
   /** Throw an auth error if no session was found. */
   if (session === null) {
     throw new ApiAuthError(req)

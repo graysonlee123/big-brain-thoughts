@@ -2,14 +2,27 @@ import { ObjectId } from 'mongodb'
 import createApiResponse from '@lib/createApiResponse'
 import apiHandler, { ApiHandler } from '@lib/api/apiHandler'
 import getDbCollection from '@lib/api/getDbCollection'
+import getEnvVar from '@lib/getEnvVar'
 
-const get: ApiHandler = async (req, res) => {
-  /** Grab the quotes collection. */
-  const quotesCollection = await getDbCollection('quotes')
-
-  /** Get the quotes that contain the user id from the request query. */
+/**
+ * Gets conversations by a user's id.
+ * @returns An array of conversations, or `null` if the user is not found.
+ */
+const get: ApiHandler<Conversation[] | null> = async (req, res) => {
   const id = req.query.id as string
-  const conversations = await quotesCollection
+
+  /** Make sure that the user exists. */
+  const usersCollection = await getDbCollection(getEnvVar('MONGODB_USERS_COLLECTION'))
+  const user = await usersCollection.findOne({ _id: new ObjectId(id) })
+
+  if (null === user) {
+    res.json(createApiResponse(false, null, 'No user by that ID was found.'))
+    return
+  }
+
+  /** Get the quotes. */
+  const quotesCollection = await getDbCollection(getEnvVar('MONGODB_QUOTES_COLLECTION'))
+  const conversations = (await quotesCollection
     .aggregate([
       {
         $match: {
@@ -53,12 +66,7 @@ const get: ApiHandler = async (req, res) => {
         $sort: { date_time: -1 },
       },
     ])
-    .toArray()
-
-  if (conversations.length === 0) {
-    res.json(createApiResponse(false, null, 'Could not find that conversation.'))
-    return
-  }
+    .toArray()) as Conversation[]
 
   res.json(createApiResponse(true, conversations, 'Found quotes based on that user.'))
 }

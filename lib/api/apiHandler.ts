@@ -4,9 +4,9 @@ import createApiResponse from '@lib/createApiResponse'
 import errorHandler from './errorHandler'
 import requireSession from './requireSession'
 
-export type ApiHandler = (
+export type ApiHandler<T = unknown> = (
   req: NextApiRequest,
-  res: NextApiResponse<APIResponse<unknown>>,
+  res: NextApiResponse<APIResponse<T>>,
   session: Session | null
 ) => void
 

@@ -4,11 +4,16 @@ import createApiResponse from '@lib/createApiResponse'
 import getEnvVar from '@lib/getEnvVar'
 import { ObjectId } from 'mongodb'
 
-const get: ApiHandler = async (req, res) => {
+/**
+ * Gets a conversation by id.
+ * @returns A conversation, or `null` if the conversation is not found.
+ */
+const get: ApiHandler<Conversation | null> = async (req, res) => {
   const id = req.query.id as string
 
+  /** Find the conversation. */
   const convosCollection = await getDbCollection(getEnvVar('MONGODB_QUOTES_COLLECTION'))
-  const convos = await convosCollection
+  const convos = (await convosCollection
     .aggregate([
       {
         $match: {
@@ -49,9 +54,9 @@ const get: ApiHandler = async (req, res) => {
         },
       },
     ])
-    .toArray()
+    .toArray()) as Conversation[]
 
-  if (!convos) {
+  if (convos.length === 0) {
     res.json(createApiResponse(false, null, 'Could not find that conversation.'))
     return
   }
