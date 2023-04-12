@@ -50,8 +50,8 @@ const get: ApiHandler = async (req, res, session) => {
   }
 
   /** Perform the surgery. */
-  const quotesCollection = await getDbCollection(getEnvVar('MONGODB_QUOTES_COLLECTION'))
-  quotesCollection.updateMany(
+  const convosCollection = await getDbCollection(getEnvVar('MONGODB_CONVERSATIONS_COLLECTION'))
+  convosCollection.updateMany(
     {
       $or: [
         { submitter_id: matchedLegacyUser._id },

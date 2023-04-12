@@ -12,8 +12,8 @@ import getEnvVar from '@lib/getEnvVar'
  * @returns An array of conversations.
  */
 const get: ApiHandler<Conversation[]> = async (req, res) => {
-  const quotesCollection = await getDbCollection(getEnvVar('MONGODB_QUOTES_COLLECTION'))
-  const conversations = (await quotesCollection
+  const convosCollection = await getDbCollection(getEnvVar('MONGODB_CONVERSATIONS_COLLECTION'))
+  const conversations = (await convosCollection
     .aggregate([
       {
         $lookup: {
@@ -68,8 +68,8 @@ const post: ApiHandler<InsertOneResult> = async (req, res, session) => {
     throw new ApiAuthError(req)
   }
 
-  /** Get the quotes collection. */
-  const quotesCollection = await getDbCollection(getEnvVar('MONGODB_QUOTES_COLLECTION'))
+  /** Get the convos collection. */
+  const convosCollection = await getDbCollection(getEnvVar('MONGODB_CONVERSATIONS_COLLECTION'))
 
   /** Get the user based on the session. */
   const user = (await queryUser(session.user?.email ?? '')) as User
@@ -87,7 +87,7 @@ const post: ApiHandler<InsertOneResult> = async (req, res, session) => {
   }
 
   /** Submit to the database. */
-  const result = await quotesCollection.insertOne(payload)
+  const result = await convosCollection.insertOne(payload)
 
   /** Reply to the client. */
   res.json(createApiResponse(true, result, 'Quote added succesfully.'))

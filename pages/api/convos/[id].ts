@@ -12,7 +12,7 @@ const get: ApiHandler<Conversation | null> = async (req, res) => {
   const id = req.query.id as string
 
   /** Find the conversation. */
-  const convosCollection = await getDbCollection(getEnvVar('MONGODB_QUOTES_COLLECTION'))
+  const convosCollection = await getDbCollection(getEnvVar('MONGODB_CONVERSATIONS_COLLECTION'))
   const convos = (await convosCollection
     .aggregate([
       {
@@ -57,11 +57,11 @@ const get: ApiHandler<Conversation | null> = async (req, res) => {
     .toArray()) as Conversation[]
 
   if (convos.length === 0) {
-    res.status(404).json(createApiResponse(false, null, 'Could not find that conversation.'))
+    res.status(404).json(createApiResponse(false, null, 'Could not find that quote.'))
     return
   }
 
-  res.json(createApiResponse(true, convos[0], 'Found the conversation.'))
+  res.json(createApiResponse(true, convos[0], 'Found the quote.'))
 }
 
 export default apiHandler({

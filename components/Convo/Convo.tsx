@@ -32,7 +32,7 @@ export function Convo({ convo }: ConvoProps) {
           <Typography variant="caption">
             Submitted by <UserLink user={convo.submitter_data} /> &bull;{' '}
             {displayDate(convo.date_time)}{' '}
-            <Link href={`/conversation/${convo._id.toString()}`}>Open</Link>
+            <Link href={`/convos/${convo._id.toString()}`}>Open</Link>
           </Typography>
         </Box>
       </Paper>

@@ -5,11 +5,11 @@ import Convo from '@components/Convo'
 import getEnvVar from '@lib/getEnvVar'
 import gsspSessionApiFetch from '@lib/gsspSessionApiFetch'
 
-interface SingleQuotePageProps {
+interface SingleConvoPageProps {
   data: Conversation
 }
 
-const SingleQuotePage: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({
+const SingleConvoPage: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({
   data,
 }) => {
   return (
@@ -21,13 +21,13 @@ const SingleQuotePage: NextPage<InferGetServerSidePropsType<typeof getServerSide
   )
 }
 
-export const getServerSideProps: GetServerSideProps<SingleQuotePageProps> = async (context) => {
+export const getServerSideProps: GetServerSideProps<SingleConvoPageProps> = async (context) => {
   const id = context.query.id as string
 
-  return await gsspSessionApiFetch<SingleQuotePageProps['data']>(
+  return await gsspSessionApiFetch<SingleConvoPageProps['data']>(
     context,
-    `${getEnvVar('NEXTAUTH_URL')}/api/quotes/${id}`
+    `${getEnvVar('NEXTAUTH_URL')}/api/convos/${id}`
   )
 }
 
-export default SingleQuotePage
+export default SingleConvoPage

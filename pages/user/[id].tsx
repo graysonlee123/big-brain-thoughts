@@ -24,7 +24,7 @@ export const getServerSideProps: GetServerSideProps<SingleUserPageProps> = async
 
   return await gsspSessionApiFetch<SingleUserPageProps['data']>(
     context,
-    `${getEnvVar('NEXTAUTH_URL')}/api/quotes/user/${id}`
+    `${getEnvVar('NEXTAUTH_URL')}/api/convos/user/${id}`
   )
 }
 

@@ -17,7 +17,7 @@ export default function AddQuote() {
 
       const payload = { title: quote }
 
-      const res = await fetch('/api/quotes', {
+      const res = await fetch('/api/convos', {
         method: 'POST',
         body: JSON.stringify(payload),
         headers: {

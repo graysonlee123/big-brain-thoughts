@@ -20,9 +20,9 @@ const get: ApiHandler<Conversation[] | null> = async (req, res) => {
     return
   }
 
-  /** Get the quotes. */
-  const quotesCollection = await getDbCollection(getEnvVar('MONGODB_QUOTES_COLLECTION'))
-  const conversations = (await quotesCollection
+  /** Get the convos. */
+  const convosCollection = await getDbCollection(getEnvVar('MONGODB_CONVERSATIONS_COLLECTION'))
+  const conversations = (await convosCollection
     .aggregate([
       {
         $match: {
