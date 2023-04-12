@@ -1,9 +1,10 @@
 import { GetServerSideProps, NextPage } from 'next'
 import { getServerSession } from 'next-auth'
+import { Container } from '@mui/material'
 import AuthedLayout from '@components/AuthedLayout'
 import ConvoList from '@components/ConvoList'
 import authOptions from '@lib/authOptions'
-import { Container } from '@mui/material'
+import getEnvVar from '@lib/getEnvVar'
 
 interface UserPageProps {
   convos: Conversation[]
@@ -21,11 +22,9 @@ const UserPage: NextPage<UserPageProps> = ({ convos }) => {
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res, query }) => {
   const session = await getServerSession(req, res, authOptions)
-  const baseURL = process.env.NEXTAUTH_URL
+  const baseURL = getEnvVar('NEXTAUTH_URL')
   const id = query.id
   let convos: Conversation[] = []
-
-  if (!baseURL) console.warn('No `NEXTAUTH_URL` environment variable!')
 
   if (session) {
     try {

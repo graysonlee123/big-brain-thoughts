@@ -4,6 +4,7 @@ import { Container } from '@mui/material'
 import ConvoList from '@components/ConvoList'
 import AuthedLayout from '@components/AuthedLayout'
 import authOptions from '@lib/authOptions'
+import getEnvVar from '@lib/getEnvVar'
 
 interface HomePageProps {
   convos: Conversation[]
@@ -21,10 +22,8 @@ const HomePage: NextPage<HomePageProps> = ({ convos }) => {
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   const session = await getServerSession(req, res, authOptions)
-  const baseURL = process.env.NEXTAUTH_URL
+  const baseURL = getEnvVar('NEXTAUTH_URL')
   let convos: Conversation[] = []
-
-  if (!baseURL) console.warn('No `NEXTAUTH_URL` environment variable!')
 
   if (session) {
     try {

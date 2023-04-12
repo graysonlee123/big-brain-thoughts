@@ -1,7 +1,7 @@
 import clientPromise from '@lib/db'
-import getDbName from './getDbName'
+import getEnvVar from '@lib/getEnvVar'
 
-const dbName = getDbName()
+const dbName = getEnvVar('MONGODB_DB_NAME')
 
 /**
  * Grabs the database connection and returns a collection.
