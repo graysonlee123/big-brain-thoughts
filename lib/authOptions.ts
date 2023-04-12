@@ -29,6 +29,9 @@ const authOptions: AuthOptions = {
       return true
     },
   },
+  pages: {
+    newUser: '/initiation',
+  },
 }
 
 export default authOptions
