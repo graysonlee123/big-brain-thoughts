@@ -22,7 +22,7 @@ const HomePage: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>>
 export const getServerSideProps: GetServerSideProps<HomePageProps> = async (context) => {
   return await gsspSessionApiFetch<HomePageProps['data']>(
     context,
-    `${getEnvVar('NEXTAUTH_URL')}/api/convos`
+    `${getEnvVar('API_URL')}/api/convos`
   )
 }
 

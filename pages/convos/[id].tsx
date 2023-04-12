@@ -26,7 +26,7 @@ export const getServerSideProps: GetServerSideProps<SingleConvoPageProps> = asyn
 
   return await gsspSessionApiFetch<SingleConvoPageProps['data']>(
     context,
-    `${getEnvVar('NEXTAUTH_URL')}/api/convos/${id}`
+    `${getEnvVar('API_URL')}/api/convos/${id}`
   )
 }
 
