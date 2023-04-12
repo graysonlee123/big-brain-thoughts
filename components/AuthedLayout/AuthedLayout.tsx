@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
-import { useSession } from 'next-auth/react'
-import { Alert, AlertTitle, Box, CircularProgress, Container, Typography } from '@mui/material'
+import { signIn, useSession } from 'next-auth/react'
+import { Box, CircularProgress } from '@mui/material'
 import Layout from '@components/Layout'
 
 interface AuthedLayoutProps {
@@ -10,17 +10,13 @@ interface AuthedLayoutProps {
 export default function AuthedLayout({ children }: AuthedLayoutProps) {
   const { status } = useSession()
 
-  if (status === 'unauthenticated')
-    return (
-      <Layout>
-        <Container maxWidth="sm" sx={{ my: 8 }}>
-          <Alert variant="filled" severity="warning">
-            <AlertTitle>Unauthenticated</AlertTitle>
-            <Typography>Log in to view the quotes.</Typography>
-          </Alert>
-        </Container>
-      </Layout>
-    )
+  if (status === 'unauthenticated') {
+    /** Need to do nothing here if the page is being generated on the server. */
+    if (typeof window === 'undefined') return null
+
+    signIn('discord')
+    return null
+  }
 
   if (status === 'loading')
     return (
