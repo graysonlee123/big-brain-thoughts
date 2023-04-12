@@ -16,12 +16,14 @@ const authOptions: AuthOptions = {
   ],
   callbacks: {
     async signIn({ user, profile }) {
-      const allowedIds = getEnvVar('DISCORD_USER_IDS').trim().split(',')
+      if (profile === undefined) return false
 
-      /** Only allow Discord account IDs that are in the environment. */
-      if (undefined === profile || -1 === allowedIds.indexOf(profile.id)) {
-        return false
-      }
+      const client = await clientPromise
+      const db = client.db(getEnvVar('MONGODB_DB_NAME'))
+      const usersCollection = db.collection(getEnvVar('MONGODB_USERS_COLLECTION'))
+
+      const dbUser = await usersCollection.findOne({ discord_id: profile?.id })
+      if (dbUser === null) return false
 
       user.legacy = false
       user.discord_id = profile.id
