@@ -2,38 +2,42 @@ import { GetServerSideProps, NextPage } from 'next'
 import { getServerSession } from 'next-auth'
 import { Container } from '@mui/material'
 import AuthedLayout from '@components/AuthedLayout'
-import ConvoList from '@components/ConvoList'
+import Convo from '@components/Convo'
 import authOptions from '@lib/authOptions'
 import getEnvVar from '@lib/getEnvVar'
 
-interface UserPageProps {
-  convos: Conversation[]
+interface SingleQuotePageProps {
+  convo: Conversation
 }
 
-const UserPage: NextPage<UserPageProps> = ({ convos }) => {
+const SingleQuotePage: NextPage<SingleQuotePageProps> = ({ convo }) => {
   return (
     <AuthedLayout>
-      <Container maxWidth="lg" sx={{ my: 8 }}>
-        <ConvoList convos={convos} />
+      <Container maxWidth="sm" sx={{ my: 8 }}>
+        <Convo convo={convo} />
       </Container>
     </AuthedLayout>
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res, query }) => {
+export const getServerSideProps: GetServerSideProps<SingleQuotePageProps> = async ({
+  req,
+  res,
+  query,
+}) => {
   const session = await getServerSession(req, res, authOptions)
   const baseURL = getEnvVar('NEXTAUTH_URL')
   const id = query.id as string
-  let convos
+  let convo
 
   if (session) {
     try {
-      const res = await fetch(`${baseURL}/api/quotes/user/${id}`, {
+      const res = await fetch(`${baseURL}/api/quotes/${id}`, {
         headers: { Cookie: req.headers.cookie ?? '' },
       })
-      const json: APIResponse<Conversation[] | null> = await res.json()
+      const json: APIResponse<Conversation | null> = await res.json()
 
-      convos = json.data
+      convo = json.data
     } catch (error) {
       console.error(error)
       return {
@@ -42,7 +46,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, query }
     }
   }
 
-  if (!convos) {
+  if (!convo) {
     return {
       notFound: true,
     }
@@ -50,10 +54,10 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, query }
 
   return {
     props: {
-      convos,
+      convo,
       session,
     },
   }
 }
 
-export default UserPage
+export default SingleQuotePage
