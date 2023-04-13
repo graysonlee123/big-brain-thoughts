@@ -14,7 +14,6 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
-import QuoteIcon from '@mui/icons-material/FormatQuote'
 import Avatar from '@components/Avatar'
 
 export function Navigation() {
@@ -33,9 +32,6 @@ export function Navigation() {
     <AppBar position="static">
       <Container maxWidth="md">
         <Toolbar disableGutters>
-          <Box sx={{ mr: 1 }}>
-            <QuoteIcon sx={{ display: 'block' }} />
-          </Box>
           <Box sx={{ flexGrow: 1 }}>
             <Typography
               variant="h6"
