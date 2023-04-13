@@ -14,7 +14,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
-import { FormatQuote as QuoteIcon } from '@mui/icons-material'
+import QuoteIcon from '@mui/icons-material/FormatQuote'
 import Avatar from '@components/Avatar'
 
 export function Navigation() {
