@@ -18,17 +18,24 @@ const authOptions: AuthOptions = {
     async signIn({ user, profile }) {
       if (profile === undefined) return false
 
+      user.legacy = false
+      user.discord_id = profile.id
+
+      /** Create database variables. */
       const client = await clientPromise
       const db = client.db(getEnvVar('MONGODB_DB_NAME'))
       const usersCollection = db.collection(getEnvVar('MONGODB_USERS_COLLECTION'))
 
+      /** Allow the user to sign in if they are found or they have a legacy account. */
       const dbUser = await usersCollection.findOne({ discord_id: profile?.id })
-      if (dbUser === null) return false
+      if (dbUser !== null) return true
 
-      user.legacy = false
-      user.discord_id = profile.id
+      /** Allow the first user to sign in. */
+      const dbUsers = await usersCollection.find({}).toArray()
+      if (dbUsers.length < 1) return true
 
-      return true
+      /** Deny otherwise. */
+      return false
     },
   },
   pages: {
