@@ -1,10 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getServerSession } from 'next-auth'
 import authOptions from '@lib/authOptions'
-import ApiAuthError from './apiAuthorizationError'
+import ApiAuthError from './apiAuthError'
 
 /**
- * Gets the session or throws an error if no session is found.
+ * Gets the session or throws an auth error if no session is found.
  * @param req The request.
  * @param res The response.
  * @returns The session.

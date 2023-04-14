@@ -1,5 +1,5 @@
 import { User } from 'next-auth'
-import ApiAuthError from '@lib/api/apiAuthorizationError'
+import ApiAuthError from '@lib/api/apiAuthError'
 import apiHandler, { ApiHandler } from '@lib/api/apiHandler'
 import getDbCollection from '@lib/api/getDbCollection'
 import createApiResponse from '@lib/createApiResponse'
