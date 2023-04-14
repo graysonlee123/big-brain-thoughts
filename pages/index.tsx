@@ -35,7 +35,7 @@ export const getServerSideProps: GetServerSideProps<HomePageProps> = async (cont
     return redirect
   }
 
-  const url = `${getEnvVar('API_URL')}/api/convos`
+  const url = `${getEnvVar('NEXT_PUBLIC_API_URL')}/api/convos`
   const options = { headers: { Cookie: req.headers.cookie ?? '' } }
 
   return await propsFromFetch(url, options)

@@ -45,7 +45,7 @@ const get: ApiHandler = async (req, res, session) => {
   })) as User
 
   if (matchedLegacyUser === null) {
-    res.json(createApiResponse(true, null, 'There was no legacy user to replace.'))
+    res.status(404).json(createApiResponse(true, null, 'There was no legacy user to replace.'))
     return
   }
 
