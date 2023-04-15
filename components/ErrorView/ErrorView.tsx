@@ -10,6 +10,7 @@ const ErrorView = ({ message }: ErrorViewProps) => {
   return (
     <Container maxWidth="md" sx={{ my: 8 }}>
       <Alert
+        variant="filled"
         severity="error"
         action={
           <Button href="/" color="inherit" size="small">
