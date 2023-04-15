@@ -1,33 +1,32 @@
 import { GetServerSideProps, InferGetServerSidePropsType, NextPage } from 'next'
 import { Container } from '@mui/material'
-import AuthedLayout from '@components/AuthedLayout'
 import Convo from '@components/Convo'
+import ErrorView from '@components/ErrorView'
 import getEnvVar from '@lib/getEnvVar'
 import sessionlessRedirectProps from '@lib/sessionlessRedirectProps'
 import propsFromFetch, { PropsFromFetchResult } from '@lib/propsFromFetch'
-import ErrorView from '@components/ErrorView'
 
-interface SingleConvoPageProps extends PropsFromFetchResult<Conversation> {}
+type Page = NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> & PageWithAuthOptions
+type PageProps = PropsFromFetchResult<Conversation>
 
-const SingleConvoPage: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({
-  error,
-  data,
-}) => {
+const SingleConvoPage: Page = ({ error, data }) => {
   if (error) return <ErrorView message={error} />
 
   if (data)
     return (
-      <AuthedLayout>
-        <Container maxWidth="sm" sx={{ my: 8 }}>
-          <Convo convo={data} />
-        </Container>
-      </AuthedLayout>
+      <Container maxWidth="sm" sx={{ my: 8 }}>
+        <Convo convo={data} />
+      </Container>
     )
 
   return null
 }
 
-export const getServerSideProps: GetServerSideProps<SingleConvoPageProps> = async (context) => {
+SingleConvoPage.auth = {
+  required: true,
+}
+
+export const getServerSideProps: GetServerSideProps<PageProps> = async (context) => {
   const { req } = context
   const redirect = await sessionlessRedirectProps(context)
   const id = context.query.id as string

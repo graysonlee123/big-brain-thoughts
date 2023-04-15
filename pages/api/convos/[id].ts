@@ -1,8 +1,8 @@
+import { ObjectId } from 'mongodb'
 import apiHandler, { ApiHandler } from '@lib/api/apiHandler'
 import getDbCollection from '@lib/api/getDbCollection'
 import createApiResponse from '@lib/createApiResponse'
 import getEnvVar from '@lib/getEnvVar'
-import { ObjectId } from 'mongodb'
 
 /**
  * Gets a conversation by id.
@@ -23,13 +23,13 @@ const get: ApiHandler<Conversation | null> = async (req, res) => {
       {
         $lookup: {
           from: 'users',
-          localField: 'submitter_id',
+          localField: 'submitterId',
           foreignField: '_id',
-          as: 'submitter_data',
+          as: 'submitterData',
         },
       },
       {
-        $unwind: '$submitter_data',
+        $unwind: '$submitterData',
       },
       {
         $unwind: '$quotes',
@@ -37,19 +37,19 @@ const get: ApiHandler<Conversation | null> = async (req, res) => {
       {
         $lookup: {
           from: 'users',
-          localField: 'quotes.speaker_id',
+          localField: 'quotes.speakerId',
           foreignField: '_id',
-          as: 'quotes.speaker_data',
+          as: 'quotes.speakerData',
         },
       },
       {
-        $unwind: '$quotes.speaker_data',
+        $unwind: '$quotes.speakerData',
       },
       {
         $group: {
           _id: '$_id',
-          submitter_data: { $first: '$submitter_data' },
-          date_time: { $first: '$date_time' },
+          submitterData: { $first: '$submitterData' },
+          timestamp: { $first: '$timestamp' },
           quotes: { $push: '$quotes' },
         },
       },

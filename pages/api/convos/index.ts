@@ -1,10 +1,9 @@
-import { InsertOneResult, ObjectId } from 'mongodb'
-import queryUser from '@lib/queryUser'
+import { User } from 'next-auth'
+import { InsertOneResult, WithId } from 'mongodb'
 import createApiResponse from '@lib/createApiResponse'
 import apiHandler, { ApiHandler } from '@lib/api/apiHandler'
 import ApiAuthError from '@lib/api/apiAuthError'
 import getDbCollection from '@lib/api/getDbCollection'
-import { User } from 'next-auth'
 import getEnvVar from '@lib/getEnvVar'
 
 /**
@@ -18,13 +17,13 @@ const get: ApiHandler<Conversation[]> = async (req, res) => {
       {
         $lookup: {
           from: 'users',
-          localField: 'submitter_id',
+          localField: 'submitterId',
           foreignField: '_id',
-          as: 'submitter_data',
+          as: 'submitterData',
         },
       },
       {
-        $unwind: '$submitter_data',
+        $unwind: '$submitterData',
       },
       {
         $unwind: '$quotes',
@@ -32,24 +31,25 @@ const get: ApiHandler<Conversation[]> = async (req, res) => {
       {
         $lookup: {
           from: 'users',
-          localField: 'quotes.speaker_id',
+          localField: 'quotes.speakerId',
           foreignField: '_id',
-          as: 'quotes.speaker_data',
+          as: 'quotes.speakerData',
         },
       },
       {
-        $unwind: '$quotes.speaker_data',
+        $unwind: '$quotes.speakerData',
       },
       {
         $group: {
           _id: '$_id',
-          submitter_data: { $first: '$submitter_data' },
-          date_time: { $first: '$date_time' },
+          submitterId: { $first: '$submitterId' },
+          submitterData: { $first: '$submitterData' },
+          timestamp: { $first: '$timestamp' },
           quotes: { $push: '$quotes' },
         },
       },
       {
-        $sort: { date_time: -1 },
+        $sort: { timestamp: -1 },
       },
     ])
     .toArray()) as Conversation[]
@@ -68,22 +68,25 @@ const post: ApiHandler<InsertOneResult> = async (req, res, session) => {
     throw new ApiAuthError(req)
   }
 
-  /** Get the convos collection. */
+  /** Get the collections. */
   const convosCollection = await getDbCollection(getEnvVar('MONGODB_CONVERSATIONS_COLLECTION'))
+  const usersCollection = await getDbCollection(getEnvVar('MONGODB_USERS_COLLECTION'))
 
   /** Get the user based on the session. */
-  const user = (await queryUser(session.user?.email ?? '')) as User
+  const user = (await usersCollection.findOne({
+    discordId: session.user.discordId,
+  })) as WithId<User>
 
   /** Create a payload for the database. */
   const payload: ConversationBase = {
-    submitter_id: new ObjectId(user._id),
+    submitterId: user._id.toString(),
     quotes: [
       {
         content: req.body.title,
-        speaker_id: new ObjectId(user._id),
+        speakerId: user._id.toString(),
       },
     ],
-    date_time: Date.now(),
+    timestamp: Date.now(),
   }
 
   /** Submit to the database. */

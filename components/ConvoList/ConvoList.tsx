@@ -29,7 +29,7 @@ export default function ConvoList({ convos }: ConvoListProps) {
                 sx={{ m: 0 }}
               >
                 {convos.map((convo) => (
-                  <Fragment key={convo._id.toString()}>
+                  <Fragment key={convo._id}>
                     <Convo convo={convo} />
                   </Fragment>
                 ))}

@@ -1,14 +1,13 @@
 import { Link, LinkProps } from '@mui/material'
-import { User } from 'next-auth'
 
 interface UserLinkProps extends Omit<LinkProps, 'href'> {
-  user: User
+  userId: string
 }
 
-export default function UserLink({ user, ...props }: UserLinkProps) {
+export default function UserLink({ userId, ...props }: UserLinkProps) {
   return (
-    <Link {...props} href={`/user/${user._id}`}>
-      {user.name ?? 'Unknown'}
+    <Link href={`/user/${userId}`} {...props}>
+      {props.children}
     </Link>
   )
 }

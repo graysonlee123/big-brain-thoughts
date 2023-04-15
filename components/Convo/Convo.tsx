@@ -15,14 +15,14 @@ export function Convo({ convo }: ConvoProps) {
             <Stack direction="row" gap={2} alignItems="start" key={quote.content}>
               <Box>
                 <Avatar
-                  src={quote.speaker_data.image ?? 'https://cdn.discordapp.com/embed/avatars/1.png'}
-                  alt={quote.speaker_data.name}
+                  src={quote.speakerData.image ?? 'https://cdn.discordapp.com/embed/avatars/1.png'}
+                  alt={quote.speakerData.username}
                 />
               </Box>
               <Box>
                 <Typography variant="h5">&quot;{quote.content}&quot;</Typography>
                 <Typography>
-                  — <UserLink user={quote.speaker_data} />
+                  — <UserLink userId={quote.speakerId}>{quote.speakerData.username}</UserLink>
                 </Typography>
               </Box>
             </Stack>
@@ -30,9 +30,9 @@ export function Convo({ convo }: ConvoProps) {
         </Stack>
         <Box sx={{ mt: 4 }}>
           <Typography variant="caption">
-            Submitted by <UserLink user={convo.submitter_data} /> &bull;{' '}
-            {displayDate(convo.date_time)}{' '}
-            <Link href={`/convos/${convo._id.toString()}`}>Open</Link>
+            Submitted by{' '}
+            <UserLink userId={convo.submitterId}>{convo.submitterData.username}</UserLink> &bull;{' '}
+            {displayDate(convo.timestamp)} <Link href={`/convos/${convo._id}`}>Open</Link>
           </Typography>
         </Box>
       </Paper>

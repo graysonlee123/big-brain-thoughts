@@ -1,4 +1,5 @@
 import { User } from 'next-auth'
+import { WithId } from 'mongodb'
 import ApiAuthError from '@lib/api/apiAuthError'
 import apiHandler, { ApiHandler } from '@lib/api/apiHandler'
 import getDbCollection from '@lib/api/getDbCollection'
@@ -17,32 +18,17 @@ const get: ApiHandler = async (req, res, session) => {
 
   /** Get the current user's Discord ID. */
   const userCollection = await getDbCollection(getEnvVar('MONGODB_USERS_COLLECTION'))
-  const user = (await userCollection.findOne({ email: session.user?.email })) as User
+  const user = (await userCollection.findOne({ discordId: session.user.discordId })) as WithId<User>
 
   if (user === null) {
     res.status(500).json(createApiResponse(false, null, 'Could not find the user to initiate.'))
     return
   }
 
-  const discordId = user.discord_id
-
-  if (discordId === null) {
-    res
-      .status(500)
-      .json(
-        createApiResponse(
-          false,
-          null,
-          'Could not complete initiation, the Discord ID for the user was null.'
-        )
-      )
-    return
-  }
-
   /** Find a legacy user based on the Discord IDs. */
   const matchedLegacyUser = (await userCollection.findOne({
-    $and: [{ legacy: true }, { discord_id: discordId }],
-  })) as User
+    $and: [{ legacy: true }, { discordId: user.discordId }],
+  })) as WithId<User>
 
   if (matchedLegacyUser === null) {
     res.status(404).json(createApiResponse(true, null, 'There was no legacy user to replace.'))

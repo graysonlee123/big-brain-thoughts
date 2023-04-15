@@ -30,7 +30,6 @@ export default function AddQuote() {
       }
 
       const json = await res.json()
-      console.log({ json })
 
       setQuote('')
     } catch (error) {

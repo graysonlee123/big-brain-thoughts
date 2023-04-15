@@ -2,6 +2,12 @@ declare module globalThis {
   var _mongoClientPromise: Promise<MongoClient> | undefined
 }
 
+interface PageWithAuthOptions {
+  auth: {
+    required: boolean
+  }
+}
+
 interface APIResponse<T> {
   ok: boolean
   data: T
@@ -9,16 +15,16 @@ interface APIResponse<T> {
 }
 
 interface ConversationBase {
-  submitter_id: import('mongodb').ObjectId
+  submitterId: string
   quotes: {
-    speaker_id: import('mongodb').ObjectId
+    speakerId: string
     content: string
   }[]
-  date_time: number
+  timestamp: number
 }
 
 interface Conversation extends ConversationBase {
-  _id: import('mongodb').ObjectId
-  submitter_data: import('next-auth').User
-  quotes: (ConversationBase['quotes'][number] & { speaker_data: import('next-auth').User })[]
+  _id: string
+  submitterData: import('next-auth').User
+  quotes: (ConversationBase['quotes'][number] & { speakerData: import('next-auth').User })[]
 }

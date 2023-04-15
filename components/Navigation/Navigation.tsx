@@ -1,5 +1,4 @@
 import { MouseEvent, useState } from 'react'
-import { useRouter } from 'next/router'
 import { signIn, signOut, useSession } from 'next-auth/react'
 import {
   AppBar,
@@ -9,7 +8,6 @@ import {
   IconButton,
   Menu,
   MenuItem,
-  Stack,
   Toolbar,
   Tooltip,
   Typography,

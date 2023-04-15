@@ -26,19 +26,19 @@ const get: ApiHandler<Conversation[] | null> = async (req, res) => {
     .aggregate([
       {
         $match: {
-          'quotes.speaker_id': new ObjectId(id),
+          'quotes.speakerId': new ObjectId(id),
         },
       },
       {
         $lookup: {
           from: 'users',
-          localField: 'submitter_id',
+          localField: 'submitterId',
           foreignField: '_id',
-          as: 'submitter_data',
+          as: 'submitterData',
         },
       },
       {
-        $unwind: '$submitter_data',
+        $unwind: '$submitterData',
       },
       {
         $unwind: '$quotes',
@@ -46,24 +46,24 @@ const get: ApiHandler<Conversation[] | null> = async (req, res) => {
       {
         $lookup: {
           from: 'users',
-          localField: 'quotes.speaker_id',
+          localField: 'quotes.speakerId',
           foreignField: '_id',
-          as: 'quotes.speaker_data',
+          as: 'quotes.speakerData',
         },
       },
       {
-        $unwind: '$quotes.speaker_data',
+        $unwind: '$quotes.speakerData',
       },
       {
         $group: {
           _id: '$_id',
-          submitter_data: { $first: '$submitter_data' },
-          date_time: { $first: '$date_time' },
+          submitterData: { $first: '$submitterData' },
+          timestamp: { $first: '$timestamp' },
           quotes: { $push: '$quotes' },
         },
       },
       {
-        $sort: { date_time: -1 },
+        $sort: { timestamp: -1 },
       },
     ])
     .toArray()) as Conversation[]

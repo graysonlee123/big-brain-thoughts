@@ -8,7 +8,7 @@ import { useMemo } from 'react'
 export default function useSortedConvos(convos: Conversation[]) {
   const sortedConvos = useMemo(() => {
     return convos.reduce((map, item) => {
-      const year = new Date(item.date_time).getFullYear()
+      const year = new Date(item.timestamp).getFullYear()
 
       if (!map.has(year)) {
         map.set(year, [])
