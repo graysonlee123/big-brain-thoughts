@@ -1,15 +1,17 @@
 import { ReactNode } from 'react'
 import Navigation from '@components/Navigation'
+import { Box, Breakpoint } from '@mui/material'
 
 interface LayoutComponentProps {
   children: ReactNode
+  spacing?: number
 }
 
-export function Layout({ children }: LayoutComponentProps) {
+export function Layout({ children, spacing = 8 }: LayoutComponentProps) {
   return (
     <>
       <Navigation />
-      {children}
+      <Box sx={{ my: spacing }}>{children}</Box>
     </>
   )
 }
