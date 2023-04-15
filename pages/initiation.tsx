@@ -15,7 +15,6 @@ import ErrorView from '@components/ErrorView'
 import AuthedLayout from '@components/AuthedLayout'
 import sessionlessRedirectProps from '@lib/sessionlessRedirectProps'
 import propsFromFetch, { PropsFromFetchResult } from '@lib/propsFromFetch'
-import getEnvVar from '@lib/getEnvVar'
 import useFetchApiCallback from '../hooks/useFetchApiCallback'
 
 interface InitiationPageProps extends PropsFromFetchResult<User | null> {}
@@ -110,7 +109,7 @@ export const getServerSideProps: GetServerSideProps<InitiationPageProps> = async
     return redirect
   }
 
-  const url = `${getEnvVar('NEXT_PUBLIC_API_URL')}/api/users/has-legacy`
+  const url = `${process.env.NEXT_PUBLIC_API_URL}/api/users/has-legacy`
   const options = { headers: { Cookie: req.headers.cookie ?? '' } }
   return await propsFromFetch(url, options)
 }

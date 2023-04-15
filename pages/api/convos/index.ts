@@ -4,14 +4,13 @@ import createApiResponse from '@lib/createApiResponse'
 import apiHandler, { ApiHandler } from '@lib/api/apiHandler'
 import ApiAuthError from '@lib/api/apiAuthError'
 import getDbCollection from '@lib/api/getDbCollection'
-import getEnvVar from '@lib/getEnvVar'
 
 /**
  * Gets all of the conversations.
  * @returns An array of conversations.
  */
 const get: ApiHandler<Conversation[]> = async (req, res) => {
-  const convosCollection = await getDbCollection(getEnvVar('MONGODB_CONVERSATIONS_COLLECTION'))
+  const convosCollection = await getDbCollection(process.env.MONGODB_CONVERSATIONS_COLLECTION)
   const conversations = (await convosCollection
     .aggregate([
       {
@@ -69,8 +68,8 @@ const post: ApiHandler<InsertOneResult> = async (req, res, session) => {
   }
 
   /** Get the collections. */
-  const convosCollection = await getDbCollection(getEnvVar('MONGODB_CONVERSATIONS_COLLECTION'))
-  const usersCollection = await getDbCollection(getEnvVar('MONGODB_USERS_COLLECTION'))
+  const convosCollection = await getDbCollection(process.env.MONGODB_CONVERSATIONS_COLLECTION)
+  const usersCollection = await getDbCollection(process.env.MONGODB_USERS_COLLECTION)
 
   /** Get the user based on the session. */
   const user = (await usersCollection.findOne({

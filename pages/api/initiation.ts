@@ -4,7 +4,6 @@ import ApiAuthError from '@lib/api/apiAuthError'
 import apiHandler, { ApiHandler } from '@lib/api/apiHandler'
 import getDbCollection from '@lib/api/getDbCollection'
 import createApiResponse from '@lib/createApiResponse'
-import getEnvVar from '@lib/getEnvVar'
 
 /**
  * Replaces a legacy user with a logged in user.
@@ -17,7 +16,7 @@ const get: ApiHandler = async (req, res, session) => {
   }
 
   /** Get the current user's Discord ID. */
-  const userCollection = await getDbCollection(getEnvVar('MONGODB_USERS_COLLECTION'))
+  const userCollection = await getDbCollection(process.env.MONGODB_USERS_COLLECTION)
   const user = (await userCollection.findOne({ discordId: session.user.discordId })) as WithId<User>
 
   if (user === null) {
@@ -36,7 +35,7 @@ const get: ApiHandler = async (req, res, session) => {
   }
 
   /** Perform the surgery. */
-  const convosCollection = await getDbCollection(getEnvVar('MONGODB_CONVERSATIONS_COLLECTION'))
+  const convosCollection = await getDbCollection(process.env.MONGODB_CONVERSATIONS_COLLECTION)
   convosCollection.updateMany(
     {
       $or: [

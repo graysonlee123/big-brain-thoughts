@@ -2,20 +2,19 @@ import { AuthOptions } from 'next-auth'
 import DiscordProvider, { DiscordProfile } from 'next-auth/providers/discord'
 import { MongoDBAdapter } from '@next-auth/mongodb-adapter'
 import clientPromise from './db'
-import getEnvVar from './getEnvVar'
 import discordAvatarUrl from './discordAvatarUrl'
 
 const authOptions: AuthOptions = {
   adapter: MongoDBAdapter(clientPromise, {
-    databaseName: getEnvVar('MONGODB_DB_NAME'),
+    databaseName: process.env.MONGODB_DB_NAME,
     collections: {
-      Users: getEnvVar('MONGODB_USERS_COLLECTION', 'users'),
+      Users: process.env.MONGODB_USERS_COLLECTION,
     },
   }),
   providers: [
     DiscordProvider({
-      clientId: getEnvVar('DISCORD_CLIENT_ID'),
-      clientSecret: getEnvVar('DISCORD_CLIENT_SECRET'),
+      clientId: process.env.DISCORD_CLIENT_ID,
+      clientSecret: process.env.DISCORD_CLIENT_SECRET,
       async profile(profile) {
         const { id, email, username, avatar } = profile as DiscordProfile
 
@@ -40,8 +39,8 @@ const authOptions: AuthOptions = {
 
       /** Create database variables. */
       const client = await clientPromise
-      const db = client.db(getEnvVar('MONGODB_DB_NAME'))
-      const usersCollection = db.collection(getEnvVar('MONGODB_USERS_COLLECTION'))
+      const db = client.db(process.env.MONGODB_DB_NAME)
+      const usersCollection = db.collection(process.env.MONGODB_USERS_COLLECTION)
 
       /** Allow the user to sign in if they are found or they have a legacy account. */
       const dbUser = await usersCollection.findOne({ discordId: profile.id })

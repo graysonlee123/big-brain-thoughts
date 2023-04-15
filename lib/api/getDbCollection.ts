@@ -1,7 +1,4 @@
 import clientPromise from '@lib/db'
-import getEnvVar from '@lib/getEnvVar'
-
-const dbName = getEnvVar('MONGODB_DB_NAME')
 
 /**
  * Grabs the database connection and returns a collection.
@@ -11,7 +8,7 @@ const dbName = getEnvVar('MONGODB_DB_NAME')
 const getDbCollection = async (collectionName: string) => {
   /** Get the DB connection. */
   const client = await clientPromise
-  const db = await client.db(dbName)
+  const db = await client.db(process.env.MONGODB_DB_NAME)
 
   /** Return the collection. */
   return db.collection(collectionName)

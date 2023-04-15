@@ -4,7 +4,6 @@ import ApiAuthError from '@lib/api/apiAuthError'
 import apiHandler, { ApiHandler } from '@lib/api/apiHandler'
 import getDbCollection from '@lib/api/getDbCollection'
 import createApiResponse from '@lib/createApiResponse'
-import getEnvVar from '@lib/getEnvVar'
 
 /**
  * Checks to see if a user has a legacy account.
@@ -17,7 +16,7 @@ const get: ApiHandler = async (req, res, session) => {
   }
 
   /** Get the current user. */
-  const usersCollection = await getDbCollection(getEnvVar('MONGODB_USERS_COLLECTION'))
+  const usersCollection = await getDbCollection(process.env.MONGODB_USERS_COLLECTION)
   const user = (await usersCollection.findOne({
     discordId: session.user.discordId,
   })) as WithId<User>

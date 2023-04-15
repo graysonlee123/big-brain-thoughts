@@ -3,7 +3,6 @@ import { WithId } from 'mongodb'
 import createApiResponse from '@lib/createApiResponse'
 import apiHandler, { ApiHandler } from '@lib/api/apiHandler'
 import getDbCollection from '@lib/api/getDbCollection'
-import getEnvVar from '@lib/getEnvVar'
 
 /**
  * Gets all of the users.
@@ -11,7 +10,7 @@ import getEnvVar from '@lib/getEnvVar'
  */
 const get: ApiHandler<User[]> = async (req, res) => {
   /** Get the users collection. */
-  const usersCollection = await getDbCollection(getEnvVar('MONGODB_USERS_COLLECTION'))
+  const usersCollection = await getDbCollection(process.env.MONGODB_USERS_COLLECTION)
 
   /** Grab the users collection. */
   const users = (await usersCollection.find({}).toArray()) as WithId<User>[]

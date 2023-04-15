@@ -2,7 +2,6 @@ import { ObjectId } from 'mongodb'
 import apiHandler, { ApiHandler } from '@lib/api/apiHandler'
 import getDbCollection from '@lib/api/getDbCollection'
 import createApiResponse from '@lib/createApiResponse'
-import getEnvVar from '@lib/getEnvVar'
 
 /**
  * Gets a conversation by id.
@@ -12,7 +11,7 @@ const get: ApiHandler<Conversation | null> = async (req, res) => {
   const id = req.query.id as string
 
   /** Find the conversation. */
-  const convosCollection = await getDbCollection(getEnvVar('MONGODB_CONVERSATIONS_COLLECTION'))
+  const convosCollection = await getDbCollection(process.env.MONGODB_CONVERSATIONS_COLLECTION)
   const convos = (await convosCollection
     .aggregate([
       {
