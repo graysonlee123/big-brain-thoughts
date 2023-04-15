@@ -1,8 +1,8 @@
 import { Fragment } from 'react'
 import { Box, Stack, Typography } from '@mui/material'
 import Masonry from '@mui/lab/Masonry'
+import useSortedConvos from '@hooks/useSortedConvos'
 import Convo from '@components/Convo'
-import useSortedConvos from 'hooks/useSortedConvos'
 
 interface ConvoListProps {
   convos: Conversation[]

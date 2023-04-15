@@ -14,7 +14,7 @@ import {
 import sessionlessRedirectProps from '@lib/sessionlessRedirectProps'
 import propsFromFetch, { PropsFromFetchResult } from '@lib/propsFromFetch'
 import apiUrl from '@lib/api/apiUrl'
-import useFetchApiCallback from '../hooks/useFetchApiCallback'
+import useFetchApiCallback from '@hooks/useFetchApiCallback'
 import ErrorView from '@components/ErrorView'
 import AuthedLayout from '@components/AuthedLayout'
 
