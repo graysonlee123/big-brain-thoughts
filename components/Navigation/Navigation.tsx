@@ -46,7 +46,7 @@ export function Navigation() {
             </Typography>
           </Box>
           {status !== 'authenticated' ? (
-            <Button onClick={() => signIn('discord')}>Login</Button>
+            <Button onClick={() => signIn('discord', { callbackUrl: '/convos' })}>Login</Button>
           ) : (
             <>
               <Tooltip title="Account details">
@@ -69,7 +69,7 @@ export function Navigation() {
                 sx={{ mt: '3rem' }}
                 keepMounted
               >
-                <MenuItem onClick={() => signOut()}>Sign out</MenuItem>
+                <MenuItem onClick={() => signOut({ callbackUrl: '/' })}>Sign out</MenuItem>
               </Menu>
             </>
           )}
