@@ -1,9 +1,10 @@
 import { GetServerSideProps, InferGetServerSidePropsType, NextPage } from 'next'
 import { Container } from '@mui/material'
-import Convo from '@components/Convo'
-import ErrorView from '@components/ErrorView'
 import sessionlessRedirectProps from '@lib/sessionlessRedirectProps'
 import propsFromFetch, { PropsFromFetchResult } from '@lib/propsFromFetch'
+import apiUrl from '@lib/api/apiUrl'
+import Convo from '@components/Convo'
+import ErrorView from '@components/ErrorView'
 
 type Page = NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> & PageWithAuthOptions
 type PageProps = PropsFromFetchResult<Conversation>
@@ -34,7 +35,7 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (context)
     return redirect
   }
 
-  const url = `${process.env.NEXT_PUBLIC_API_URL}/api/convos/${id}`
+  const url = apiUrl(`/api/convos/${id}`)
   const options = { headers: { Cookie: req.headers.cookie ?? '' } }
 
   return await propsFromFetch(url, options)

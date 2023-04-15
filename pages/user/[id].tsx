@@ -2,6 +2,7 @@ import { GetServerSideProps, InferGetServerSidePropsType, NextPage } from 'next'
 import { Container } from '@mui/material'
 import sessionlessRedirectProps from '@lib/sessionlessRedirectProps'
 import propsFromFetch, { PropsFromFetchResult } from '@lib/propsFromFetch'
+import apiUrl from '@lib/api/apiUrl'
 import ConvoList from '@components/ConvoList'
 import ErrorView from '@components/ErrorView'
 
@@ -31,7 +32,7 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (context)
     return redirect
   }
 
-  const url = `${process.env.NEXT_PUBLIC_API_URL}/api/convos/user/${id}`
+  const url = apiUrl(`/api/convos/user/${id}`)
   const options = { headers: { Cookie: req.headers.cookie ?? '' } }
 
   return await propsFromFetch(url, options)
