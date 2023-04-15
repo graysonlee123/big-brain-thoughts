@@ -1,4 +1,4 @@
-import { Avatar, Box, Link, Paper, Stack, Typography } from '@mui/material'
+import { Avatar, Box, IconButton, Link, Paper, Stack, Typography } from '@mui/material'
 import UserLink from '@components/UserLink'
 import { displayDate } from '@lib/dateHelpers'
 
@@ -14,10 +14,14 @@ export function Convo({ convo }: ConvoProps) {
           {convo.quotes.map((quote) => (
             <Stack direction="row" gap={2} alignItems="start" key={quote.content}>
               <Box>
-                <Avatar
-                  src={quote.speakerData.image ?? 'https://cdn.discordapp.com/embed/avatars/1.png'}
-                  alt={quote.speakerData.username}
-                />
+                <IconButton href={`/user/${quote.speakerId}`}>
+                  <Avatar
+                    src={
+                      quote.speakerData.image ?? 'https://cdn.discordapp.com/embed/avatars/1.png'
+                    }
+                    alt={quote.speakerData.username}
+                  />
+                </IconButton>
               </Box>
               <Box>
                 <Typography variant="h5">&quot;{quote.content}&quot;</Typography>
