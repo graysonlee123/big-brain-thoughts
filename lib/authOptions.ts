@@ -69,7 +69,7 @@ const authOptions: AuthOptions = {
     },
   },
   pages: {
-    newUser: '/initiation',
+    // newUser: '/initiation',
   },
 }
 
