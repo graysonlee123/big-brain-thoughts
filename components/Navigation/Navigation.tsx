@@ -34,7 +34,7 @@ export function Navigation() {
             <Typography
               variant="h6"
               component="a"
-              href="/"
+              href={status === 'authenticated' ? '/convos' : '/'}
               sx={{
                 color: 'inherit',
                 fontWeight: 700,
