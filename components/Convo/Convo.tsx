@@ -2,6 +2,7 @@ import { Box, IconButton, Link, Paper, Stack, Typography } from '@mui/material'
 import { displayDate } from '@lib/dateHelpers'
 import UserLink from '@components/UserLink'
 import UserAvatar from '@components/UserAvatar'
+import CopyButton from '@components/CopyButton'
 
 interface ConvoProps {
   convo: Conversation
@@ -10,7 +11,7 @@ interface ConvoProps {
 export function Convo({ convo }: ConvoProps) {
   return (
     <Box>
-      <Paper sx={{ p: 4 }}>
+      <Paper sx={{ p: 4, '&:hover .copy-link': { visibility: 'visible' } }}>
         <Stack direction="column" gap={3}>
           {convo.quotes.map((quote) => (
             <Stack direction="row" gap={2} alignItems="start" key={quote.content}>
@@ -29,11 +30,18 @@ export function Convo({ convo }: ConvoProps) {
           ))}
         </Stack>
         <Box sx={{ mt: 4 }}>
-          <Typography variant="caption">
-            Submitted by{' '}
-            <UserLink userId={convo.submitterId}>{convo.submitterData.username}</UserLink> &bull;{' '}
-            {displayDate(convo.timestamp)} <Link href={`/convos/${convo._id}`}>Open</Link>
-          </Typography>
+          <Stack direction="row" justifyContent="space-between" gap={1}>
+            <Typography variant="caption">
+              Submitted by{' '}
+              <UserLink userId={convo.submitterId}>{convo.submitterData.username}</UserLink> &bull;{' '}
+              {displayDate(convo.timestamp)}
+            </Typography>
+            <Typography className="copy-link" variant="caption" sx={{ visibility: 'hidden' }}>
+              <CopyButton data={`${process.env.NEXT_PUBLIC_API_URL}/convos/${convo._id}`}>
+                Copy Link
+              </CopyButton>
+            </Typography>
+          </Stack>
         </Box>
       </Paper>
     </Box>
