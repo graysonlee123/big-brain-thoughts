@@ -1,6 +1,7 @@
-import { Avatar, Box, IconButton, Link, Paper, Stack, Typography } from '@mui/material'
-import UserLink from '@components/UserLink'
+import { Box, IconButton, Link, Paper, Stack, Typography } from '@mui/material'
 import { displayDate } from '@lib/dateHelpers'
+import UserLink from '@components/UserLink'
+import UserAvatar from '@components/UserAvatar'
 
 interface ConvoProps {
   convo: Conversation
@@ -15,12 +16,7 @@ export function Convo({ convo }: ConvoProps) {
             <Stack direction="row" gap={2} alignItems="start" key={quote.content}>
               <Box>
                 <IconButton href={`/user/${quote.speakerId}`}>
-                  <Avatar
-                    src={
-                      quote.speakerData.image ?? 'https://cdn.discordapp.com/embed/avatars/1.png'
-                    }
-                    alt={quote.speakerData.username}
-                  />
+                  <UserAvatar user={quote.speakerData} />
                 </IconButton>
               </Box>
               <Box>

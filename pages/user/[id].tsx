@@ -7,14 +7,14 @@ import ConvoList from '@components/ConvoList'
 import ErrorView from '@components/ErrorView'
 
 type Page = NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> & PageWithAuthOptions
-type PageProps = PropsFromFetchResult<Conversation[]>
+type PageProps = PropsFromFetchResult<UserWithConvos>
 
 const UserPage: Page = ({ error, data }) => {
   if (error) return <ErrorView message={error} />
 
   return (
     <Container maxWidth="lg" sx={{ my: 8 }}>
-      <ConvoList convos={data ?? []} />
+      <ConvoList convos={data?.convos ?? []} user={data?.user} />
     </Container>
   )
 }

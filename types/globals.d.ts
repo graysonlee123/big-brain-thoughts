@@ -28,3 +28,8 @@ interface Conversation extends ConversationBase {
   submitterData: import('next-auth').User
   quotes: (ConversationBase['quotes'][number] & { speakerData: import('next-auth').User })[]
 }
+
+interface UserWithConvos {
+  convos: Conversation[]
+  user: User
+}

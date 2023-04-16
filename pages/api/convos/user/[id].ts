@@ -1,4 +1,5 @@
-import { ObjectId } from 'mongodb'
+import { ObjectId, WithId } from 'mongodb'
+import { User } from 'next-auth'
 import createApiResponse from '@lib/createApiResponse'
 import apiHandler, { ApiHandler } from '@lib/api/apiHandler'
 import getDbCollection from '@lib/api/getDbCollection'
@@ -7,12 +8,12 @@ import getDbCollection from '@lib/api/getDbCollection'
  * Gets conversations by a user's id.
  * @returns An array of conversations, or `null` if the user is not found.
  */
-const get: ApiHandler<Conversation[] | null> = async (req, res) => {
+const get: ApiHandler<UserWithConvos | null> = async (req, res) => {
   const id = req.query.id as string
 
   /** Make sure that the user exists. */
   const usersCollection = await getDbCollection(process.env.MONGODB_USERS_COLLECTION)
-  const user = await usersCollection.findOne({ _id: new ObjectId(id) })
+  const user = (await usersCollection.findOne({ _id: new ObjectId(id) })) as WithId<User> | null
 
   if (null === user) {
     res.status(404).json(createApiResponse(false, null, 'No user by that ID was found.'))
@@ -21,7 +22,7 @@ const get: ApiHandler<Conversation[] | null> = async (req, res) => {
 
   /** Get the convos. */
   const convosCollection = await getDbCollection(process.env.MONGODB_CONVERSATIONS_COLLECTION)
-  const conversations = (await convosCollection
+  const convos = (await convosCollection
     .aggregate([
       {
         $match: {
@@ -67,7 +68,7 @@ const get: ApiHandler<Conversation[] | null> = async (req, res) => {
     ])
     .toArray()) as Conversation[]
 
-  res.json(createApiResponse(true, conversations, 'Found quotes based on that user.'))
+  res.json(createApiResponse(true, { convos, user }, 'Found quotes based on that user.'))
 }
 
 export default apiHandler({
