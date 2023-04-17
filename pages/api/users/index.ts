@@ -12,7 +12,7 @@ const get: ApiHandler<WithId<DBUser>[]> = async (req, res) => {
   const usersCollection = await getDbCollection<DBUser>(process.env.MONGODB_USERS_COLLECTION)
 
   /** Grab the users collection. */
-  const users = await usersCollection.find({}).toArray()
+  const users = await usersCollection.find().sort({ username: 1 }).toArray()
 
   /** Reply to the client. */
   res.json(createApiResponse(true, users, 'Found users succesfully.'))
