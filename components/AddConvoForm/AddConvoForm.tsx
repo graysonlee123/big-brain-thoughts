@@ -1,5 +1,6 @@
 import { Fragment, useCallback, useEffect, useState } from 'react'
 import { User } from 'next-auth'
+import { useRouter } from 'next/router'
 import { v4 as uuid } from 'uuid'
 import {
   Box,
@@ -32,7 +33,6 @@ const AddConvoForm = ({ users }: AddConvoFormProps) => {
   const [quotes, setQuotes] = useState<StateQuote[]>([])
   const newQuote = useCallback((): StateQuote => ({ id: uuid(), content: '', speakerId: '' }), [])
   const enqueueSnackbar = useEnqueueSnackbar()
-  const maxQuotes = 5
   const { error, loading, res, fetcher } = useFetchApiCallback('/api/convos', {
     method: 'POST',
     headers: { type: 'application/json' },
@@ -43,6 +43,8 @@ const AddConvoForm = ({ users }: AddConvoFormProps) => {
       })),
     }),
   })
+  const router = useRouter()
+  const maxQuotes = 5
 
   useEffect(() => {
     if (quotes.length === 0) {
@@ -68,8 +70,9 @@ const AddConvoForm = ({ users }: AddConvoFormProps) => {
     if (res?.ok) {
       enqueueSnackbar('Your quote was added!', { variant: 'success' })
       setQuotes([])
+      router.push('/convos')
     }
-  }, [res, enqueueSnackbar])
+  }, [res, enqueueSnackbar, router])
 
   const validateForm = () => {
     let isValid = true
