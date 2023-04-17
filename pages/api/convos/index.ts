@@ -74,7 +74,12 @@ const post: ApiHandler<InsertOneResult | null> = async (req, res, session) => {
   /** Get the user based on the session. */
   const user = (await usersCollection.findOne({
     discordId: session.user.discordId,
-  })) as WithId<User>
+  })) as WithId<User> | null
+
+  if (user === null) {
+    res.status(404).json(createApiResponse(false, null, 'No current user could be determined.'))
+    return
+  }
 
   const data = JSON.parse(req.body)
   const quotes = data.quotes
