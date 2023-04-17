@@ -1,4 +1,5 @@
 import { Fragment, useCallback, useEffect, useState } from 'react'
+import { User } from 'next-auth'
 import { v4 as uuid } from 'uuid'
 import {
   Box,
@@ -22,7 +23,11 @@ export interface StateQuote extends QuoteBase {
   selectError?: string
 }
 
-const AddConvoForm = () => {
+interface AddConvoFormProps {
+  users: User[]
+}
+
+const AddConvoForm = ({ users }: AddConvoFormProps) => {
   const [quotes, setQuotes] = useState<StateQuote[]>([])
   const newQuote = useCallback((): StateQuote => ({ id: uuid(), content: '', speakerId: '' }), [])
   const enqueueSnackbar = useEnqueueSnackbar()
@@ -127,8 +132,11 @@ const AddConvoForm = () => {
               <QuoteInput quote={quote} loading={loading} onChange={updateQuote} />
               <Stack direction="row" gap={1}>
                 <UserSelect quote={quote} loading={loading} onChange={updateQuote}>
-                  <MenuItem value="62b5346450864d785d303e60">Grayson</MenuItem>
-                  <MenuItem value="62b5349250864d785d303e64">Andrew</MenuItem>
+                  {users.map((user) => (
+                    <MenuItem value={user.id} key={user._id}>
+                      {user.username}
+                    </MenuItem>
+                  ))}
                 </UserSelect>
               </Stack>
             </Stack>

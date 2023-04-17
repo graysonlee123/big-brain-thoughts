@@ -3,6 +3,9 @@ import { DiscordProfile } from 'next-auth/providers/discord'
 
 declare module 'next-auth' {
   interface User {
+    /** Will be provided when being retrieved from the database. */
+    _id?: string
+
     /** Every account should have a username. */
     username: string
 

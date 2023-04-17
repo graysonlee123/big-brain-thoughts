@@ -1,19 +1,34 @@
-import { NextPage } from 'next'
+import { GetServerSideProps, InferGetServerSidePropsType, NextPage } from 'next'
+import { User } from 'next-auth'
 import { Container } from '@mui/material'
+import propsFromFetch, { PropsFromFetchResult } from '@lib/propsFromFetch'
+import apiUrl from '@lib/api/apiUrl'
 import AddConvoForm from '@components/AddConvoForm'
+import ErrorView from '@components/ErrorView'
 
-type NewConvoPage = NextPage & PageWithAuthOptions
+type NewConvoPage = NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> &
+  PageWithAuthOptions
+type PageProps = PropsFromFetchResult<User[]>
 
-const NewConvoPage: NewConvoPage = () => {
+const NewConvoPage: NewConvoPage = ({ error, data }) => {
+  if (error) return <ErrorView message={error} />
+
   return (
     <Container maxWidth="sm">
-      <AddConvoForm />
+      <AddConvoForm users={data ?? []} />
     </Container>
   )
 }
 
 NewConvoPage.auth = {
   required: true,
+}
+
+export const getServerSideProps: GetServerSideProps<PageProps> = async ({ req }) => {
+  const url = apiUrl('/api/users')
+  const options = { headers: { Cookie: req.headers.cookie ?? '' } }
+
+  return await propsFromFetch(url, options)
 }
 
 export default NewConvoPage

@@ -23,6 +23,7 @@ const UserSelect = ({ quote, loading, onChange, children }: UserSelectProps) => 
         }
         labelId={labelId}
         label={label}
+        MenuProps={{ PaperProps: { sx: { maxHeight: '14rem' } } }}
       >
         {children}
       </Select>
