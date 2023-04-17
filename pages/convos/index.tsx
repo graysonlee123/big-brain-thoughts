@@ -1,5 +1,6 @@
 import type { GetServerSideProps, InferGetServerSidePropsType, NextPage } from 'next'
-import { Container } from '@mui/material'
+import NextLink from 'next/link'
+import { Box, Button, Container } from '@mui/material'
 import sessionlessRedirectProps from '@lib/sessionlessRedirectProps'
 import propsFromFetch, { PropsFromFetchResult } from '@lib/propsFromFetch'
 import apiUrl from '@lib/api/apiUrl'
@@ -14,6 +15,11 @@ const Page: Page = ({ error, data }) => {
 
   return (
     <Container maxWidth="lg">
+      <Box sx={{ display: 'flex', justifyContent: 'center', mb: 8 }}>
+        <Button href="/convos/new" LinkComponent={NextLink} variant="contained">
+          Add Quote
+        </Button>
+      </Box>
       <ConvoList convos={data ?? []} />
     </Container>
   )

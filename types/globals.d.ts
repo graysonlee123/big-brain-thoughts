@@ -14,19 +14,25 @@ interface APIResponse<T> {
   msg?: string
 }
 
+interface QuoteBase {
+  speakerId: string
+  content: string
+}
+
 interface ConversationBase {
   submitterId: string
-  quotes: {
-    speakerId: string
-    content: string
-  }[]
-  timestamp: number
+  quotes: QuoteBase[]
+  timestamp: string
+}
+
+interface Quote extends QuoteBase {
+  speakerData: import('next-auth').user
 }
 
 interface Conversation extends ConversationBase {
   _id: string
   submitterData: import('next-auth').User
-  quotes: (ConversationBase['quotes'][number] & { speakerData: import('next-auth').User })[]
+  quotes: Quote[]
 }
 
 interface UserWithConvos {

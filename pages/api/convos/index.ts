@@ -1,5 +1,5 @@
 import { User } from 'next-auth'
-import { InsertOneResult, WithId } from 'mongodb'
+import { InsertOneResult, ObjectId, WithId } from 'mongodb'
 import createApiResponse from '@lib/createApiResponse'
 import apiHandler, { ApiHandler } from '@lib/api/apiHandler'
 import ApiAuthError from '@lib/api/apiAuthError'
@@ -59,9 +59,9 @@ const get: ApiHandler<Conversation[]> = async (req, res) => {
 
 /**
  * Post a new conversation.
- * @returns The new conversation.
+ * @returns The new conversation or `null` if there was an issue.
  */
-const post: ApiHandler<InsertOneResult> = async (req, res, session) => {
+const post: ApiHandler<InsertOneResult | null> = async (req, res, session) => {
   /** Throw an auth error if no session was found. */
   if (session === null) {
     throw new ApiAuthError(req)
@@ -76,16 +76,43 @@ const post: ApiHandler<InsertOneResult> = async (req, res, session) => {
     discordId: session.user.discordId,
   })) as WithId<User>
 
+  const data = JSON.parse(req.body)
+  const quotes = data.quotes
+
+  if (!Array.isArray(quotes)) {
+    res.status(400).json(createApiResponse(false, null, 'Invalid data type for quotes array sent.'))
+    return
+  }
+
+  if (quotes.length === 0) {
+    res
+      .status(400)
+      .json(createApiResponse(false, null, 'An empty array was passed for the quotes.'))
+    return
+  }
+
+  if (
+    !quotes.every((item) => {
+      if (item === null) return false
+      if (typeof item !== 'object') return false
+      if (!('content' in item)) return false
+      if (typeof item.content !== 'string') return false
+      if (item.content === '') return false
+      if (!('speakerId' in item)) return false
+      if (typeof item.speakerId !== 'string') return false
+      if (!ObjectId.isValid(item.speakerId)) return false
+      return true
+    })
+  ) {
+    res.status(400).json(createApiResponse(false, null, 'Invalid data type for quotes array sent.'))
+    return
+  }
+
   /** Create a payload for the database. */
-  const payload: ConversationBase = {
-    submitterId: user._id.toString(),
-    quotes: [
-      {
-        content: req.body.title,
-        speakerId: user._id.toString(),
-      },
-    ],
-    timestamp: Date.now(),
+  const payload = {
+    submitterId: user._id,
+    quotes: quotes.map((quote) => ({ ...quote, speakerId: new ObjectId(quote.speakerId) })),
+    timestamp: new Date().toISOString(),
   }
 
   /** Submit to the database. */
