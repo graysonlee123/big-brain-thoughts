@@ -12,10 +12,11 @@ import {
   Stack,
   Typography,
 } from '@mui/material'
+import useFetchApiCallback from '@hooks/useFetchApiCallback'
+import useEnqueueSnackbar from '@hooks/useEnqueueSnackbar'
 import QuoteInput from '@components/QuoteInput'
 import UserSelect from '@components/UserSelect'
-import useEnqueueSnackbar from '@hooks/useEnqueueSnackbar'
-import useFetchApiCallback from '@hooks/useFetchApiCallback'
+import UserAvatar from '@components/UserAvatar'
 
 export interface StateQuote extends QuoteBase {
   id: string
@@ -133,8 +134,11 @@ const AddConvoForm = ({ users }: AddConvoFormProps) => {
               <Stack direction="row" gap={1}>
                 <UserSelect quote={quote} loading={loading} onChange={updateQuote}>
                   {users.map((user) => (
-                    <MenuItem value={user.id} key={user._id}>
-                      {user.username}
+                    <MenuItem value={user._id ?? ''} key={user._id}>
+                      <Stack direction="row" alignItems="center">
+                        <UserAvatar user={user} sx={{ mr: 2 }} />
+                        <Typography variant="body1">{user.username}</Typography>
+                      </Stack>
                     </MenuItem>
                   ))}
                 </UserSelect>
