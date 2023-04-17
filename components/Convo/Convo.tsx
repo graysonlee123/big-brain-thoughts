@@ -13,8 +13,8 @@ export function Convo({ convo }: ConvoProps) {
     <Box>
       <Paper sx={{ p: 4, '&:hover .copy-link': { visibility: 'visible' } }}>
         <Stack direction="column" gap={3}>
-          {convo.quotes.map((quote) => (
-            <Stack direction="row" gap={2} alignItems="start" key={quote.content}>
+          {convo.quotes.map((quote, index) => (
+            <Stack direction="row" gap={2} alignItems="start" key={`${quote.content}-${index}`}>
               <Box>
                 <IconButton href={`/user/${quote.speakerId}`}>
                   <UserAvatar user={quote.speakerData} />
