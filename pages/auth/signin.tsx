@@ -10,7 +10,7 @@ const SigninPage = ({ providers }: InferGetServerSidePropsType<typeof getServerS
   const values = Object.values(providers ?? [])
 
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="lg">
       <NextAuthErrorAlert />
       {values.length === 0 ? (
         <Alert severity="error">No sign in methods were found.</Alert>

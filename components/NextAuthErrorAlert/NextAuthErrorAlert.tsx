@@ -1,4 +1,4 @@
-import { Alert, AlertTitle, Box, Button } from '@mui/material'
+import { Alert, AlertTitle, Container } from '@mui/material'
 import { useRouter } from 'next/router'
 import { ReactNode } from 'react'
 
@@ -14,6 +14,8 @@ function errorMessage(error = '') {
       return "There is something wrong with the server's configuration."
     case 'AccessDenied':
       return "You don't have access to Big Brain Thoughts."
+    case 'SessionRequired':
+      return 'You must be signed in to view that page.'
     default:
       return 'Sorry, There was an error signing you in.'
   }
@@ -30,22 +32,12 @@ const NextAuthErrorAlert = ({ action }: NextAuthErrorsProps) => {
   if (error === undefined) return null
 
   return (
-    <Box sx={{ mb: 8 }}>
-      <Alert
-        variant="filled"
-        severity="error"
-        action={
-          action ?? (
-            <Button href="/auth/signin" color="inherit" size="small">
-              Retry
-            </Button>
-          )
-        }
-      >
+    <Container maxWidth="sm" sx={{ mb: 8 }}>
+      <Alert variant="filled" severity="error" action={action}>
         <AlertTitle>Login Error</AlertTitle>
         {errorMessage(error)}
       </Alert>
-    </Box>
+    </Container>
   )
 }
 
