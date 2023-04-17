@@ -4,5 +4,5 @@ import { Avatar as MuiAvatar } from '@mui/material'
 export function Avatar() {
   const { data } = useSession()
 
-  return <MuiAvatar src={data?.user?.avatar ?? undefined} />
+  return <MuiAvatar src={data?.user?.avatar ?? undefined}>?</MuiAvatar>
 }

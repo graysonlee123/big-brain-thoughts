@@ -1,4 +1,5 @@
 import { MouseEvent, useState } from 'react'
+import NextLink from 'next/link'
 import { signIn, signOut, useSession } from 'next-auth/react'
 import {
   AppBar,
@@ -30,25 +31,33 @@ export function Navigation() {
     <AppBar position="static">
       <Container maxWidth="md">
         <Toolbar disableGutters>
-          <Box sx={{ flexGrow: 1 }}>
-            <Typography
-              variant="h6"
-              component="a"
-              href={status === 'authenticated' ? '/convos' : '/'}
-              sx={{
-                color: 'inherit',
-                fontWeight: 700,
-                textDecoration: 'none',
-              }}
-              noWrap
-            >
-              Big Brain Thoughts
-            </Typography>
-          </Box>
-          {status !== 'authenticated' ? (
-            <Button onClick={() => signIn('discord', { callbackUrl: '/convos' })}>Login</Button>
-          ) : (
-            <>
+          <Typography
+            variant="h6"
+            component={NextLink}
+            href={status === 'authenticated' ? '/convos' : '/'}
+            sx={{
+              mr: 'auto',
+              color: 'inherit',
+              fontWeight: 700,
+              textDecoration: 'none',
+            }}
+            noWrap
+          >
+            Big Brain Thoughts
+          </Typography>
+          <Button href="/convos" LinkComponent={NextLink} sx={{ mr: 1 }}>
+            Quotes
+          </Button>
+          <Button href="/convos/new" LinkComponent={NextLink} sx={{ mr: 1 }}>
+            Add
+          </Button>
+          {status !== 'authenticated' && (
+            <Button href="/auth/signin" variant="contained" LinkComponent={NextLink} sx={{ ml: 1 }}>
+              Login
+            </Button>
+          )}
+          {status === 'authenticated' && (
+            <Box sx={{ ml: 2 }}>
               <Tooltip title="Account details">
                 <IconButton onClick={handleOpenUserMenu} sx={{ padding: 0 }}>
                   <Avatar />
@@ -69,9 +78,15 @@ export function Navigation() {
                 sx={{ mt: '3rem' }}
                 keepMounted
               >
-                <MenuItem onClick={() => signOut({ callbackUrl: '/' })}>Sign out</MenuItem>
+                {status === 'authenticated' ? (
+                  <MenuItem onClick={() => signOut({ callbackUrl: '/' })}>Logout</MenuItem>
+                ) : (
+                  <MenuItem onClick={() => signIn('discord', { callbackUrl: '/convos' })}>
+                    Login
+                  </MenuItem>
+                )}
               </Menu>
-            </>
+            </Box>
           )}
         </Toolbar>
       </Container>

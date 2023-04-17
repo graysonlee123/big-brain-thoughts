@@ -1,3 +1,4 @@
+import NextLink from 'next/link'
 import { Link, LinkProps } from '@mui/material'
 
 interface UserLinkProps extends Omit<LinkProps, 'href'> {
@@ -6,7 +7,7 @@ interface UserLinkProps extends Omit<LinkProps, 'href'> {
 
 export default function UserLink({ userId, ...props }: UserLinkProps) {
   return (
-    <Link href={`/user/${userId}`} {...props}>
+    <Link href={`/user/${userId}`} component={NextLink} {...props}>
       {props.children}
     </Link>
   )

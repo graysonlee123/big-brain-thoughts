@@ -17,7 +17,7 @@ const sessionlessRedirectProps = async (
   if (session === null) {
     return {
       redirect: {
-        destination: destionation ?? '/api/auth/signin',
+        destination: destionation ?? '/auth/signin',
         permanent: false,
       },
     }

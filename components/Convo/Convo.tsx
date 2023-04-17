@@ -1,4 +1,5 @@
-import { Box, IconButton, Link, Paper, Stack, Typography } from '@mui/material'
+import NextLink from 'next/link'
+import { Box, IconButton, Paper, Stack, Typography } from '@mui/material'
 import { displayDate } from '@lib/dateHelpers'
 import UserLink from '@components/UserLink'
 import UserAvatar from '@components/UserAvatar'
@@ -16,7 +17,7 @@ export function Convo({ convo }: ConvoProps) {
           {convo.quotes.map((quote, index) => (
             <Stack direction="row" gap={2} alignItems="start" key={`${quote.content}-${index}`}>
               <Box>
-                <IconButton href={`/user/${quote.speakerId}`}>
+                <IconButton href={`/user/${quote.speakerId}`} LinkComponent={NextLink}>
                   <UserAvatar user={quote.speakerData} />
                 </IconButton>
               </Box>
