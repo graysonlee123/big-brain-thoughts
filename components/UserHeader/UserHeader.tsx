@@ -1,9 +1,8 @@
-import { User } from 'next-auth'
 import { Box, Typography } from '@mui/material'
 import UserAvatar from '@components/UserAvatar'
 
 interface UserHeaderProps {
-  user: User
+  user: ApiUser
 }
 
 const UserHeader = ({ user }: UserHeaderProps) => {

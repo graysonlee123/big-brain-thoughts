@@ -7,13 +7,15 @@ import createApiResponse from '@lib/createApiResponse'
  * Gets a conversation by id.
  * @returns A conversation, or `null` if the conversation is not found.
  */
-const get: ApiHandler<Conversation | null> = async (req, res) => {
+const get: ApiHandler<AggregationConvo | null> = async (req, res) => {
   const id = req.query.id as string
 
   /** Find the conversation. */
-  const convosCollection = await getDbCollection(process.env.MONGODB_CONVERSATIONS_COLLECTION)
-  const convos = (await convosCollection
-    .aggregate([
+  const convosCollection = await getDbCollection<DBConvo>(
+    process.env.MONGODB_CONVERSATIONS_COLLECTION
+  )
+  const convos = await convosCollection
+    .aggregate<AggregationConvo>([
       {
         $match: {
           _id: new ObjectId(id),
@@ -53,7 +55,7 @@ const get: ApiHandler<Conversation | null> = async (req, res) => {
         },
       },
     ])
-    .toArray()) as Conversation[]
+    .toArray()
 
   if (convos.length === 0) {
     res.status(404).json(createApiResponse(false, null, 'Could not find that quote.'))

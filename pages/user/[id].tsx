@@ -6,7 +6,7 @@ import ConvoList from '@components/ConvoList'
 import ErrorView from '@components/ErrorView'
 
 type Page = NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> & PageWithAuthOptions
-type PageProps = PropsFromFetchResult<UserWithConvos>
+type PageProps = PropsFromFetchResult<{ convos: ApiConvo[]; user: ApiUser }>
 
 const UserPage: Page = ({ error, data }) => {
   if (error) return <ErrorView message={error} />

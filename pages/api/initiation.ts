@@ -1,5 +1,3 @@
-import { User } from 'next-auth'
-import { WithId } from 'mongodb'
 import ApiAuthError from '@lib/api/apiAuthError'
 import apiHandler, { ApiHandler } from '@lib/api/apiHandler'
 import getDbCollection from '@lib/api/getDbCollection'
@@ -9,15 +7,15 @@ import createApiResponse from '@lib/createApiResponse'
  * Replaces a legacy user with a logged in user.
  * @returns `null`.
  */
-const get: ApiHandler = async (req, res, session) => {
+const get: ApiHandler<null> = async (req, res, session) => {
   /** Throw an auth error if there is no session. */
   if (session === null) {
     throw new ApiAuthError(req)
   }
 
   /** Get the current user's Discord ID. */
-  const userCollection = await getDbCollection(process.env.MONGODB_USERS_COLLECTION)
-  const user = (await userCollection.findOne({ discordId: session.user.discordId })) as WithId<User>
+  const userCollection = await getDbCollection<DBUser>(process.env.MONGODB_USERS_COLLECTION)
+  const user = await userCollection.findOne({ discordId: session.user.discordId })
 
   if (user === null) {
     res.status(500).json(createApiResponse(false, null, 'Could not find the user to initiate.'))
@@ -25,17 +23,19 @@ const get: ApiHandler = async (req, res, session) => {
   }
 
   /** Find a legacy user based on the Discord IDs. */
-  const matchedLegacyUser = (await userCollection.findOne({
+  const matchedLegacyUser = await userCollection.findOne({
     $and: [{ legacy: true }, { discordId: user.discordId }],
-  })) as WithId<User>
+  })
 
   if (matchedLegacyUser === null) {
-    res.status(404).json(createApiResponse(true, null, 'There was no legacy user to replace.'))
+    res.status(404).json(createApiResponse(false, null, 'There was no legacy user to replace.'))
     return
   }
 
   /** Perform the surgery. */
-  const convosCollection = await getDbCollection(process.env.MONGODB_CONVERSATIONS_COLLECTION)
+  const convosCollection = await getDbCollection<DBConvo>(
+    process.env.MONGODB_CONVERSATIONS_COLLECTION
+  )
   convosCollection.updateMany(
     {
       $or: [

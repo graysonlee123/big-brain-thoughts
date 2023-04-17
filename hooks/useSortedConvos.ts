@@ -5,7 +5,7 @@ import { useMemo } from 'react'
  * @param convos The array of conversations.
  * @returns A map, with each key representing a year.
  */
-export default function useSortedConvos(convos: Conversation[]) {
+export default function useSortedConvos(convos: ApiConvo[]) {
   const sortedConvos = useMemo(() => {
     return convos.reduce((map, item) => {
       const year = new Date(item.timestamp).getFullYear()
@@ -17,7 +17,7 @@ export default function useSortedConvos(convos: Conversation[]) {
       map.get(year)!.push(item)
 
       return map
-    }, new Map<number, Conversation[]>())
+    }, new Map<number, ApiConvo[]>())
   }, [convos])
 
   return sortedConvos

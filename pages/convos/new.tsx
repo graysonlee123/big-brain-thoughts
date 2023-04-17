@@ -1,5 +1,4 @@
 import { GetServerSideProps, InferGetServerSidePropsType, NextPage } from 'next'
-import { User } from 'next-auth'
 import { Container } from '@mui/material'
 import propsFromFetch, { PropsFromFetchResult } from '@lib/propsFromFetch'
 import apiUrl from '@lib/api/apiUrl'
@@ -8,7 +7,7 @@ import ErrorView from '@components/ErrorView'
 
 type NewConvoPage = NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> &
   PageWithAuthOptions
-type PageProps = PropsFromFetchResult<User[]>
+type PageProps = PropsFromFetchResult<ApiUser[]>
 
 const NewConvoPage: NewConvoPage = ({ error, data }) => {
   if (error) return <ErrorView message={error} />

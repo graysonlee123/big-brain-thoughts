@@ -2,31 +2,10 @@ import NextAuth, { ISODateString } from 'next-auth'
 import { DiscordProfile } from 'next-auth/providers/discord'
 
 declare module 'next-auth' {
-  interface User {
-    /** Will be provided when being retrieved from the database. */
-    _id?: string
-
-    /** Every account should have a username. */
-    username: string
-
-    /** Legacy accounts won't have an email or an avatar. */
-    email: string | null
-    avatar: string | null
-
-    /** Every account will have a Discord account ID. */
-    discordId: string
-
-    /** A flag for whether the account is legacy or not. */
-    legacy: boolean
-  }
+  interface User extends UserBase {}
 
   interface Session {
-    user: {
-      username: string
-      discordId: string
-      avatar: string | null
-      email: string | null
-    }
+    user: UserBase
   }
 
   interface Profile extends DiscordProfile {}

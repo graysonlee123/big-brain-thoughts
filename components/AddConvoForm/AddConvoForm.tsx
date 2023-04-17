@@ -1,5 +1,4 @@
 import { Fragment, useCallback, useEffect, useState } from 'react'
-import { User } from 'next-auth'
 import { useRouter } from 'next/router'
 import { v4 as uuid } from 'uuid'
 import {
@@ -26,7 +25,7 @@ export interface StateQuote extends QuoteBase {
 }
 
 interface AddConvoFormProps {
-  users: User[]
+  users: ApiUser[]
 }
 
 const AddConvoForm = ({ users }: AddConvoFormProps) => {

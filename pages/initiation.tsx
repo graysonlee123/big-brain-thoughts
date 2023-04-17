@@ -11,7 +11,6 @@ import {
   Container,
   Typography,
 } from '@mui/material'
-import sessionlessRedirectProps from '@lib/sessionlessRedirectProps'
 import propsFromFetch, { PropsFromFetchResult } from '@lib/propsFromFetch'
 import apiUrl from '@lib/api/apiUrl'
 import useFetchApiCallback from '@hooks/useFetchApiCallback'
@@ -102,14 +101,7 @@ const InitiationPage: NextPage<InferGetServerSidePropsType<typeof getServerSideP
   return null
 }
 
-export const getServerSideProps: GetServerSideProps<InitiationPageProps> = async (context) => {
-  const { req } = context
-  const redirect = await sessionlessRedirectProps(context)
-
-  if (redirect !== null) {
-    return redirect
-  }
-
+export const getServerSideProps: GetServerSideProps<InitiationPageProps> = async ({ req }) => {
   const url = apiUrl('/api/users/has-legacy')
   const options = { headers: { Cookie: req.headers.cookie ?? '' } }
   return await propsFromFetch(url, options)

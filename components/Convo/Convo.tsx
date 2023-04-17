@@ -6,7 +6,7 @@ import UserAvatar from '@components/UserAvatar'
 import CopyButton from '@components/CopyButton'
 
 interface ConvoProps {
-  convo: Conversation
+  convo: ApiConvo
 }
 
 export function Convo({ convo }: ConvoProps) {

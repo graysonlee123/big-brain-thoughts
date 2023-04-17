@@ -54,14 +54,15 @@ const authOptions: AuthOptions = {
       return false
     },
     session: async ({ session, user }) => {
-      const { username, avatar, email, discordId } = user
+      const { username, avatar, email, discordId, legacy } = user
 
       return {
         user: {
           username,
           avatar,
-          email,
+          email: email ?? null,
           discordId,
+          legacy,
         },
         expires: session.expires,
       }

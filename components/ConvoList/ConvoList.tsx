@@ -7,8 +7,8 @@ import Convo from '@components/Convo'
 import UserHeader from '@components/UserHeader'
 
 interface ConvoListProps {
-  convos: Conversation[]
-  user?: User
+  convos: ApiConvo[]
+  user?: ApiUser
 }
 
 export default function ConvoList({ convos, user }: ConvoListProps) {

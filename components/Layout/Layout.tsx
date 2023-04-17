@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 import Navigation from '@components/Navigation'
-import { Box, Breakpoint } from '@mui/material'
+import { Box } from '@mui/material'
 
 interface LayoutComponentProps {
   children: ReactNode

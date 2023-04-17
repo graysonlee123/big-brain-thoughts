@@ -1,9 +1,8 @@
 import { useMemo } from 'react'
-import { User } from 'next-auth'
 import { Avatar, AvatarProps } from '@mui/material'
 
 interface UserAvatarProps extends Omit<AvatarProps, 'src'> {
-  user: User
+  user: ApiUser
 }
 
 const UserAvatar = ({ user, ...props }: UserAvatarProps) => {

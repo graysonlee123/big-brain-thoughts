@@ -1,5 +1,4 @@
-import { User } from 'next-auth'
-import { InsertOneResult, ObjectId, WithId } from 'mongodb'
+import { InsertOneResult, ObjectId } from 'mongodb'
 import createApiResponse from '@lib/createApiResponse'
 import apiHandler, { ApiHandler } from '@lib/api/apiHandler'
 import ApiAuthError from '@lib/api/apiAuthError'
@@ -9,10 +8,12 @@ import getDbCollection from '@lib/api/getDbCollection'
  * Gets all of the conversations.
  * @returns An array of conversations.
  */
-const get: ApiHandler<Conversation[]> = async (req, res) => {
-  const convosCollection = await getDbCollection(process.env.MONGODB_CONVERSATIONS_COLLECTION)
-  const conversations = (await convosCollection
-    .aggregate([
+const get: ApiHandler<AggregationConvo[]> = async (req, res) => {
+  const convosCollection = await getDbCollection<DBConvo>(
+    process.env.MONGODB_CONVERSATIONS_COLLECTION
+  )
+  const conversations = await convosCollection
+    .aggregate<AggregationConvo>([
       {
         $lookup: {
           from: 'users',
@@ -51,7 +52,7 @@ const get: ApiHandler<Conversation[]> = async (req, res) => {
         $sort: { timestamp: -1 },
       },
     ])
-    .toArray()) as Conversation[]
+    .toArray()
 
   /** Reply with the conversations. */
   res.json(createApiResponse(true, conversations, 'Found quotes succesfully.'))
@@ -61,20 +62,20 @@ const get: ApiHandler<Conversation[]> = async (req, res) => {
  * Post a new conversation.
  * @returns The new conversation or `null` if there was an issue.
  */
-const post: ApiHandler<InsertOneResult | null> = async (req, res, session) => {
+const post: ApiHandler<InsertOneResult<DBConvo> | null> = async (req, res, session) => {
   /** Throw an auth error if no session was found. */
   if (session === null) {
     throw new ApiAuthError(req)
   }
 
   /** Get the collections. */
-  const convosCollection = await getDbCollection(process.env.MONGODB_CONVERSATIONS_COLLECTION)
-  const usersCollection = await getDbCollection(process.env.MONGODB_USERS_COLLECTION)
+  const convosCollection = await getDbCollection<DBConvo>(
+    process.env.MONGODB_CONVERSATIONS_COLLECTION
+  )
+  const usersCollection = await getDbCollection<DBUser>(process.env.MONGODB_USERS_COLLECTION)
 
   /** Get the user based on the session. */
-  const user = (await usersCollection.findOne({
-    discordId: session.user.discordId,
-  })) as WithId<User> | null
+  const user = await usersCollection.findOne({ discordId: session.user.discordId })
 
   if (user === null) {
     res.status(404).json(createApiResponse(false, null, 'No current user could be determined.'))
@@ -82,6 +83,12 @@ const post: ApiHandler<InsertOneResult | null> = async (req, res, session) => {
   }
 
   const data = JSON.parse(req.body)
+
+  if (!('quotes' in data)) {
+    res.status(400).json(createApiResponse(false, null, 'Body was missing the quotes field.'))
+    return
+  }
+
   const quotes = data.quotes
 
   if (!Array.isArray(quotes)) {
@@ -114,7 +121,7 @@ const post: ApiHandler<InsertOneResult | null> = async (req, res, session) => {
   }
 
   /** Create a payload for the database. */
-  const payload = {
+  const payload: DBConvo = {
     submitterId: user._id,
     quotes: quotes.map((quote) => ({ ...quote, speakerId: new ObjectId(quote.speakerId) })),
     timestamp: new Date().toISOString(),

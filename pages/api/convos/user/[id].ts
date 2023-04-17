@@ -1,5 +1,4 @@
-import { ObjectId, WithId } from 'mongodb'
-import { User } from 'next-auth'
+import { ObjectId } from 'mongodb'
 import createApiResponse from '@lib/createApiResponse'
 import apiHandler, { ApiHandler } from '@lib/api/apiHandler'
 import getDbCollection from '@lib/api/getDbCollection'
@@ -8,12 +7,12 @@ import getDbCollection from '@lib/api/getDbCollection'
  * Gets conversations by a user's id.
  * @returns An array of conversations, or `null` if the user is not found.
  */
-const get: ApiHandler<UserWithConvos | null> = async (req, res) => {
+const get: ApiHandler<{ convos: AggregationConvo[]; user: DBUser } | null> = async (req, res) => {
   const id = req.query.id as string
 
   /** Make sure that the user exists. */
-  const usersCollection = await getDbCollection(process.env.MONGODB_USERS_COLLECTION)
-  const user = (await usersCollection.findOne({ _id: new ObjectId(id) })) as WithId<User> | null
+  const usersCollection = await getDbCollection<DBUser>(process.env.MONGODB_USERS_COLLECTION)
+  const user = await usersCollection.findOne({ _id: new ObjectId(id) })
 
   if (null === user) {
     res.status(404).json(createApiResponse(false, null, 'No user by that ID was found.'))
@@ -21,9 +20,11 @@ const get: ApiHandler<UserWithConvos | null> = async (req, res) => {
   }
 
   /** Get the convos. */
-  const convosCollection = await getDbCollection(process.env.MONGODB_CONVERSATIONS_COLLECTION)
-  const convos = (await convosCollection
-    .aggregate([
+  const convosCollection = await getDbCollection<DBConvo>(
+    process.env.MONGODB_CONVERSATIONS_COLLECTION
+  )
+  const convos = await convosCollection
+    .aggregate<AggregationConvo>([
       {
         $match: {
           'quotes.speakerId': new ObjectId(id),
@@ -66,7 +67,7 @@ const get: ApiHandler<UserWithConvos | null> = async (req, res) => {
         $sort: { timestamp: -1 },
       },
     ])
-    .toArray()) as Conversation[]
+    .toArray()
 
   res.json(createApiResponse(true, { convos, user }, 'Found quotes based on that user.'))
 }
