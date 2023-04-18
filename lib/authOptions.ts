@@ -3,6 +3,7 @@ import DiscordProvider, { DiscordProfile } from 'next-auth/providers/discord'
 import { MongoDBAdapter } from '@next-auth/mongodb-adapter'
 import clientPromise from './db'
 import discordAvatarUrl from './discordAvatarUrl'
+import fetchDiscordUser from './fetchDiscordUser'
 
 const authOptions: AuthOptions = {
   adapter: MongoDBAdapter(clientPromise, {
@@ -32,23 +33,37 @@ const authOptions: AuthOptions = {
     }),
   ],
   callbacks: {
-    async signIn({ profile }) {
+    async signIn({ profile, account }) {
       if (profile === undefined) return false
-
-      // TODO: Re-fetch the user's data from Discord using the access token in the `account` parameter
 
       /** Create database variables. */
       const client = await clientPromise
       const db = client.db(process.env.MONGODB_DB_NAME)
-      const usersCollection = db.collection(process.env.MONGODB_USERS_COLLECTION)
+      const usersCollection = db.collection<DBUser>(process.env.MONGODB_USERS_COLLECTION)
+
+      /** Store fresh information about the user from Discord's API. */
+      try {
+        const user = await fetchDiscordUser(account?.access_token)
+        if (user) {
+          await usersCollection.updateOne(
+            { discordId: user.id, legacy: false },
+            { $set: { username: user.username, avatar: discordAvatarUrl(user.id, user.avatar) } }
+          )
+        }
+      } catch (error) {
+        console.log(
+          `There was an error fetching up to date profile information for user ${profile.id}`,
+          error
+        )
+      }
 
       /** Allow the user to sign in if they are found or they have a legacy account. */
       const dbUser = await usersCollection.findOne({ discordId: profile.id })
       if (dbUser !== null) return true
 
       /** Allow the first user to sign in. */
-      const dbUsers = await usersCollection.find({}).toArray()
-      if (dbUsers.length < 1) return true
+      const dbUsers = await usersCollection.count({})
+      if (dbUsers < 1) return true
 
       /** Deny otherwise. */
       return false
