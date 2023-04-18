@@ -1,13 +1,14 @@
 import { GetServerSideProps, InferGetServerSidePropsType, NextPage } from 'next'
-import { User } from 'next-auth'
+import NextLink from 'next/link'
+import { useRouter } from 'next/router'
 import {
   Alert,
+  AlertTitle,
   Box,
   Button,
   Card,
   CardActions,
   CardContent,
-  CircularProgress,
   Container,
   Typography,
 } from '@mui/material'
@@ -15,94 +16,102 @@ import propsFromFetch, { PropsFromFetchResult } from '@lib/propsFromFetch'
 import apiUrl from '@lib/api/apiUrl'
 import useFetchApiCallback from '@hooks/useFetchApiCallback'
 import ErrorView from '@components/ErrorView'
-import AuthedLayout from '@components/AuthedLayout'
+import FullscreenSpinner from '@components/FullscreenSpinner'
+import { useEffect, useState } from 'react'
 
-interface InitiationPageProps extends PropsFromFetchResult<User | null> {}
+interface InitiationPageProps extends PropsFromFetchResult<boolean> {}
 
 const InitiationPage: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({
   error,
   data,
 }) => {
-  const { error: apiError, loading, res, fetcher } = useFetchApiCallback<null>('/api/initiation')
-  if (apiError) console.warn({ apiError })
+  const {
+    error: apiError,
+    loading: apiLoading,
+    res: apiRes,
+    fetcher,
+  } = useFetchApiCallback('/api/users/initiation', { method: 'PATCH' })
+  const router = useRouter()
+  const [redirect, setRedirect] = useState(false)
 
-  /** The error from getServerSideProps. */
-  if (error) return <ErrorView message={error} />
+  const buttonText = apiError ? 'Retry' : 'Begin'
 
-  /** The data from getServerSideProps. */
-  /** If data is null, no legacy user was found. */
-  if (data === null)
-    return (
-      <AuthedLayout>
-        <Container maxWidth="md" sx={{ my: 8 }}>
-          <Alert
-            severity="warning"
-            action={
-              <Button href="/" color="inherit" size="small">
-                Home
-              </Button>
-            }
-          >
-            <Typography>There was no legacy user found for this account.</Typography>
-          </Alert>
-        </Container>
-      </AuthedLayout>
-    )
+  /** Trigger a redirect if data returns `false`, meaning no legacy user is found. */
+  useEffect(() => {
+    if (data === false) setRedirect(true)
+  }, [data])
 
-  /** The API will return data only if a legacy user is found. */
-  if (data) {
-    if (apiError) return <ErrorView message="There was an error initiating your user." />
+  /** Redirect to the convos page. */
+  useEffect(() => {
+    if (redirect) router.push('/convos')
+  }, [redirect, router])
 
-    if (loading)
-      return (
-        <AuthedLayout>
-          <Box sx={{ my: 8, display: 'flex', justifyContent: 'center' }}>
-            <CircularProgress />
+  /** If there is an error, show the user. */
+  if (error) {
+    console.log({ error })
+    return <ErrorView message={error} />
+  }
+
+  /** Show a spinner if there is no legacy user. */
+  if (data === false) return <FullscreenSpinner />
+
+  /** Data must be `true`, meaning there is a legacy user. */
+  return (
+    <>
+      {apiLoading && <FullscreenSpinner />}
+      <Container maxWidth="xs">
+        {apiError && (
+          <Box sx={{ mb: 4 }}>
+            <Alert variant="filled" severity="error">
+              <AlertTitle>Migration Error</AlertTitle>
+              There was an issue migrating your account. You can retry or continue without
+              migrating.
+            </Alert>
           </Box>
-        </AuthedLayout>
-      )
-
-    return (
-      <AuthedLayout>
-        <Container maxWidth="md" sx={{ my: 8 }}>
-          {res?.ok === true ? (
+        )}
+        {apiRes?.data === true ? (
+          <>
             <Alert
+              variant="filled"
+              severity="success"
               action={
-                <Button href="/" color="inherit" size="small">
+                <Button href="/convos" LinkComponent={NextLink} color="inherit" size="small">
                   Start
                 </Button>
               }
             >
-              <Typography>Succesfully migrated your account!</Typography>
+              <AlertTitle>Success!</AlertTitle>
+              Your account was migrated succesfully!
             </Alert>
-          ) : (
-            <>
-              <Card sx={{ maxWidth: '20rem', mx: 'auto' }}>
-                <CardContent>
-                  <Typography variant="h5" gutterBottom>
-                    Migrate
-                  </Typography>
-                  <Typography color="text.secondary">
-                    Since this is your first time signing in, click the button below in order to
-                    migrate your old data.
-                  </Typography>
-                </CardContent>
-                <CardActions>
-                  <Button onClick={() => fetcher()}>Begin</Button>
-                </CardActions>
-              </Card>
-            </>
-          )}
-        </Container>
-      </AuthedLayout>
-    )
-  }
-
-  return null
+          </>
+        ) : (
+          <>
+            <Card>
+              <CardContent>
+                <Typography variant="h5" gutterBottom>
+                  Migrate
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  It looks like you have a legacy account from the old version of Big Brain
+                  Thoughts. Push the &quot;{buttonText}&quot; to migrate your old data into your new
+                  account.
+                </Typography>
+              </CardContent>
+              <CardActions>
+                <Button onClick={() => fetcher()} disabled={apiLoading}>
+                  {buttonText}
+                </Button>
+              </CardActions>
+            </Card>
+          </>
+        )}
+      </Container>
+    </>
+  )
 }
 
 export const getServerSideProps: GetServerSideProps<InitiationPageProps> = async ({ req }) => {
-  const url = apiUrl('/api/users/has-legacy')
+  const url = apiUrl('/api/users/initiation/has-legacy')
   const options = { headers: { Cookie: req.headers.cookie ?? '' } }
   return await propsFromFetch(url, options)
 }

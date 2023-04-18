@@ -87,7 +87,7 @@ const authOptions: AuthOptions = {
     signIn: '/auth/signin',
     signOut: '/auth/signout',
     error: '/auth/error',
-    // newUser: '/initiation',
+    newUser: '/initiation',
   },
 }
 

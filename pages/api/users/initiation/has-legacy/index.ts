@@ -6,9 +6,9 @@ import createApiResponse from '@lib/createApiResponse'
 
 /**
  * Checks to see if a user has a legacy account.
- * @returns The legacy user, or `null` if none was found.
+ * @returns A boolean, or `null` if there was an issue.
  */
-const get: ApiHandler<WithId<DBUser> | null> = async (req, res, session) => {
+const get: ApiHandler<boolean | null> = async (req, res, session) => {
   /** Throw an auth error if there is no session. */
   if (session === null) {
     throw new ApiAuthError(req)
@@ -30,14 +30,14 @@ const get: ApiHandler<WithId<DBUser> | null> = async (req, res, session) => {
     $and: [{ legacy: true }, { discordId: user.discordId }],
   })
 
-  /** Return `null` to the client. */
+  /** Return `false` to the client if no legacy user was found. */
   if (matchedLegacyUser === null) {
-    res.json(createApiResponse(false, null, 'There was no legacy user to replace.'))
+    res.json(createApiResponse(false, false, 'There was no legacy user to replace.'))
     return
   }
 
-  /** Return the legacy user to the client. */
-  res.json(createApiResponse(true, matchedLegacyUser, 'Found the legacy user.'))
+  /** Return `true` to the client, indicating there is a legacy user. */
+  res.json(createApiResponse(true, true, 'Found the legacy user.'))
 }
 
 export default apiHandler({
