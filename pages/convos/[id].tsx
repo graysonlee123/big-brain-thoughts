@@ -2,8 +2,8 @@ import { GetServerSideProps, InferGetServerSidePropsType, NextPage } from 'next'
 import { Container } from '@mui/material'
 import propsFromFetch, { PropsFromFetchResult } from '@lib/propsFromFetch'
 import apiUrl from '@lib/api/apiUrl'
-import Convo from '@components/Convo'
 import ErrorView from '@components/ErrorView'
+import ConvoCard from '@components/ConvoCard'
 
 type Page = NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> & PageWithAuthOptions
 type PageProps = PropsFromFetchResult<ApiConvo>
@@ -14,7 +14,7 @@ const SingleConvoPage: Page = ({ error, data }) => {
   if (data)
     return (
       <Container maxWidth="sm" sx={{ my: 8 }}>
-        <Convo convo={data} />
+        <ConvoCard convo={data} quotes={<ConvoCard.Quotes />} details={<ConvoCard.Details />} />
       </Container>
     )
 
