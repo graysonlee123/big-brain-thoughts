@@ -5,7 +5,7 @@ declare module 'next-auth' {
   interface User extends UserBase {}
 
   interface Session {
-    user: UserBase
+    user: UserBase & { id: string }
   }
 
   interface Profile extends DiscordProfile {}

@@ -43,11 +43,16 @@ const authOptions: AuthOptions = {
 
       /** Store fresh information about the user from Discord's API. */
       try {
-        const user = await fetchDiscordUser(account?.access_token)
-        if (user) {
+        const discordUser = await fetchDiscordUser(account?.access_token)
+        if (discordUser) {
           await usersCollection.updateOne(
-            { discordId: user.id, legacy: false },
-            { $set: { username: user.username, avatar: discordAvatarUrl(user.id, user.avatar) } }
+            { discordId: discordUser.id, legacy: false },
+            {
+              $set: {
+                username: discordUser.username,
+                avatar: discordAvatarUrl(discordUser.id, discordUser.avatar),
+              },
+            }
           )
         }
       } catch (error) {
@@ -69,10 +74,11 @@ const authOptions: AuthOptions = {
       return false
     },
     session: async ({ session, user }) => {
-      const { username, avatar, email, discordId, legacy } = user
+      const { id, username, avatar, email, discordId, legacy } = user
 
       return {
         user: {
+          id,
           username,
           avatar,
           email: email ?? null,
